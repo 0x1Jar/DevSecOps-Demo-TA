@@ -1,7 +1,3 @@
-Berikut adalah contoh isi **README.md** untuk repositori GitHub Anda yang menjelaskan proyek CI/CD dengan Jenkins, analisis kerentanan kode menggunakan SonarQube, dan deployment server menggunakan Docker. README ini dirancang agar informatif, profesional, dan mudah dipahami oleh pembaca.
-
----
-
 # **CI/CD Pipeline with Jenkins, SonarQube, and Docker**
 
 ![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-Jenkins-blue) ![SonarQube](https://img.shields.io/badge/Code%20Analysis-SonarQube-green) ![Docker](https://img.shields.io/badge/Deployment-Docker-blue)
@@ -228,9 +224,6 @@ This project is licensed under the [MIT License](LICENSE).
 
 For questions or feedback, feel free to reach out:
 
-- Email: your-email@example.com
-- GitHub: [@your-username](https://github.com/your-username)
+- GitHub: [@zxJar](https://github.com/zxJar)
 
 ---
-
-Dengan README ini, pengguna lain atau anggota tim Anda dapat dengan mudah memahami tujuan proyek, alur kerja, dan cara mengatur pipeline CI/CD. Anda juga bisa menyesuaikan konten sesuai kebutuhan spesifik proyek Anda. 😊
