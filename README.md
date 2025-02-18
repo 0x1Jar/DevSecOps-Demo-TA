@@ -1,18 +1,20 @@
-# **CI/CD Pipeline with Jenkins, SonarQube, and Nginx**
-![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-Jenkins-blue) ![SonarQube](https://img.shields.io/badge/Code%20Analysis-SonarQube-green) ![Nginx](https://img.shields.io/badge/Deployment-Nginx-blue)
+# **CI/CD Pipeline with Jenkins, SonarQube, and Docker**
 
-This repository demonstrates a complete **CI/CD pipeline** setup using **Jenkins**, **SonarQube**, and **Nginx**. The pipeline automates the process of building, analyzing code quality, and deploying a static website to a server using **Nginx**.
+![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-Jenkins-blue) ![SonarQube](https://img.shields.io/badge/Code%20Analysis-SonarQube-green) ![Docker](https://img.shields.io/badge/Deployment-Docker-blue)
+
+This repository demonstrates a complete **CI/CD pipeline** setup using **Jenkins**, **SonarQube**, and **Docker**. The pipeline automates the process of building, testing, analyzing code quality, and deploying applications to a server.
 
 ---
 
 ## **Overview**
 
-The goal of this project is to create an automated CI/CD pipeline for a **static website** that:
-1. **Builds** the static files (HTML, CSS, JavaScript, etc.).
-2. **Analyzes** the code for vulnerabilities and quality issues using **SonarQube**.
-3. **Deploys** the static website to a server using **Nginx**.
+The goal of this project is to create an automated CI/CD pipeline that:
 
-This setup ensures efficient development workflows, improved code quality, and seamless deployment for static websites.
+1. **Builds** the application code.
+2. **Analyzes** the code for vulnerabilities and quality issues using **SonarQube**.
+3. **Deploys** the application to a server using **Docker**.
+
+This setup ensures efficient development workflows, improved code quality, and seamless deployment.
 
 ---
 
@@ -20,8 +22,7 @@ This setup ensures efficient development workflows, improved code quality, and s
 
 - **Jenkins**: Automates the CI/CD pipeline.
 - **SonarQube**: Analyzes code for vulnerabilities, bugs, and code smells.
-- **Nginx**: Serves the static website efficiently.
-- **Docker**: Containerizes the Nginx server for consistent deployment across environments.
+- **Docker**: Containerizes the application for consistent deployment across environments.
 - **GitHub**: Hosts the source code and integrates with Jenkins for version control.
 
 ---
@@ -33,13 +34,19 @@ The CI/CD pipeline consists of the following stages:
 1. **Source Code Checkout**:
    - Jenkins pulls the latest code from the GitHub repository.
 
-2. **Code Analysis**:
+2. **Build**:
+   - Compiles the application code (if applicable).
+
+3. **Code Analysis**:
    - Runs a static code analysis using SonarQube to detect vulnerabilities, bugs, and code smells.
 
-3. **Docker Build**:
-   - Builds a Docker image with **Nginx** to serve the static website.
+4. **Testing**:
+   - Executes unit tests and integration tests (optional, depending on your application).
 
-4. **Deployment**:
+5. **Docker Build**:
+   - Builds a Docker image for the application.
+
+6. **Deployment**:
    - Deploys the Docker container to a server or cloud environment.
 
 ---
@@ -83,8 +90,6 @@ Before setting up the pipeline, ensure you have the following tools installed an
    - Create a new pipeline job in Jenkins.
    - Configure the job to pull code from your GitHub repository.
 
----
-
 ### **2. Configure SonarQube**
 
 1. **Set Up SonarQube Server**:
@@ -97,41 +102,43 @@ Before setting up the pipeline, ensure you have the following tools installed an
 3. **Add SonarQube Configuration to Your Project**:
    - Create a `sonar-project.properties` file in the root of your project:
      ```properties
-     sonar.projectKey=my-static-website
-     sonar.sources=.
+     sonar.projectKey=my-app
+     sonar.sources=src
      sonar.host.url=http://localhost:9000
      sonar.login=<your-sonarqube-token>
      ```
 
----
-
-### **3. Configure Nginx**
+### **3. Configure Docker**
 
 1. **Create a Dockerfile**:
-   - Add a `Dockerfile` to your project to define the Nginx container:
+   - Add a `Dockerfile` to your project to define the container image:
      ```dockerfile
-     # Use the official Nginx image
-     FROM nginx:alpine
+     # Use an official base image
+     FROM node:16
 
-     # Copy static files to the default Nginx public folder
-     COPY . /usr/share/nginx/html
+     # Set the working directory
+     WORKDIR /app
 
-     # Expose port 80
-     EXPOSE 80
+     # Copy package.json and install dependencies
+     COPY package*.json ./
+     RUN npm install
 
-     # Start Nginx
-     CMD ["nginx", "-g", "daemon off;"]
+     # Copy the rest of the application code
+     COPY . .
+
+     # Expose the application port
+     EXPOSE 3000
+
+     # Start the application
+     CMD ["npm", "start"]
      ```
 
-2. **Test Locally**:
-   - Build and run the Docker image locally to ensure it works:
+2. **Build and Test Locally**:
+   - Build the Docker image locally to ensure it works:
      ```bash
-     docker build -t static-website .
-     docker run -d -p 80:80 static-website
+     docker build -t my-app .
+     docker run -p 3000:3000 my-app
      ```
-   - Open your browser and navigate to `http://localhost` to verify the website.
-
----
 
 ### **4. Define the Jenkins Pipeline**
 
@@ -140,16 +147,26 @@ Create a `Jenkinsfile` in the root of your repository to define the pipeline sta
 ```groovy
 pipeline {
     agent any
+
     environment {
-        DOCKER_IMAGE = 'static-website'
+        DOCKER_IMAGE = 'my-app'
         SONARQUBE_TOKEN = credentials('sonarqube-token')
     }
+
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/zxJar/DevSecOps-Demo-TA.git'
+                git branch: 'main', url: 'https://github.com/username/repo-name.git'
             }
         }
+
+        stage('Build') {
+            steps {
+                echo 'Building the application...'
+                sh 'npm install'
+            }
+        }
+
         stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube analysis...'
@@ -158,19 +175,21 @@ pipeline {
                 }
             }
         }
+
         stage('Build Docker Image') {
             steps {
-                echo 'Building Docker image with Nginx...'
+                echo 'Building Docker image...'
                 script {
                     docker.build(DOCKER_IMAGE)
                 }
             }
         }
+
         stage('Deploy') {
             steps {
-                echo 'Deploying static website with Nginx...'
+                echo 'Deploying application...'
                 script {
-                    docker.image(DOCKER_IMAGE).run('-p 80:80')
+                    docker.image(DOCKER_IMAGE).run('-p 3000:3000')
                 }
             }
         }
@@ -183,9 +202,9 @@ pipeline {
 ## **How It Works**
 
 1. Jenkins pulls the latest code from GitHub.
-2. The pipeline runs a static code analysis using SonarQube to detect vulnerabilities.
-3. If the code passes the analysis, Jenkins builds a Docker image with **Nginx** to serve the static website.
-4. Finally, the Docker container is deployed to the server, and the website is served on port 80.
+2. The pipeline builds the application and runs SonarQube analysis to detect vulnerabilities.
+3. If the code passes the analysis, Jenkins builds a Docker image.
+4. Finally, the Docker container is deployed to the server.
 
 ---
 
@@ -204,4 +223,7 @@ This project is licensed under the [MIT License](LICENSE).
 ## **Contact**
 
 For questions or feedback, feel free to reach out:
+
 - GitHub: [@zxJar](https://github.com/zxJar)
+
+---
