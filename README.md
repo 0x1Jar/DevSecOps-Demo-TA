@@ -1,7 +1,7 @@
 # **CI/CD Pipeline with Jenkins, SonarQube, and Docker on VPS**
 ![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-Jenkins-blue) ![SonarQube](https://img.shields.io/badge/Code%20Analysis-SonarQube-green) ![Docker](https://img.shields.io/badge/Deployment-Docker-blue)
 
-This repository demonstrates a complete **CI/CD pipeline** setup using **Jenkins**, **SonarQube**, and **Docker**. The pipeline automates the process of building, analyzing code quality, and deploying applications to a server. Since GitHub does not support webhooks with local networks, this setup uses **three VPS servers** for Jenkins, SonarQube, and Docker.
+This repository demonstrates a complete **CI/CD pipeline** setup using **Jenkins**, **SonarQube**, and **Docker**. The pipeline automates the process of building, analyzing code quality, and deploying a static website to a **Docker Server** that acts as a **web server using Nginx**. Since GitHub does not support webhooks with local networks, this setup uses **three VPS servers**: Jenkins, SonarQube, and Docker.
 
 ---
 
@@ -10,7 +10,7 @@ This repository demonstrates a complete **CI/CD pipeline** setup using **Jenkins
 The goal of this project is to create an automated CI/CD pipeline that:
 1. **Builds** the application code.
 2. **Analyzes** the code for vulnerabilities and quality issues using **SonarQube**.
-3. **Deploys** the application to a server using **Docker**.
+3. **Deploys** the application to a **Docker Server** that serves the static website using **Nginx**.
 
 This setup ensures efficient development workflows, improved code quality, and seamless deployment in a production-like environment.
 
@@ -21,6 +21,7 @@ This setup ensures efficient development workflows, improved code quality, and s
 - **Jenkins**: Automates the CI/CD pipeline (hosted on a dedicated VPS).
 - **SonarQube**: Analyzes code for vulnerabilities, bugs, and code smells (hosted on a dedicated VPS).
 - **Docker**: Containerizes the application for consistent deployment across environments (hosted on a dedicated VPS).
+- **Nginx**: Serves the static website efficiently on the Docker Server.
 - **GitHub**: Hosts the source code and integrates with Jenkins for version control.
 
 ---
@@ -36,10 +37,10 @@ The CI/CD pipeline consists of the following stages:
    - Runs a static code analysis using SonarQube to detect vulnerabilities, bugs, and code smells.
 
 3. **Docker Build**:
-   - Builds a Docker image for the application.
+   - Builds a Docker image for the application using the official **Nginx** image.
 
 4. **Deployment**:
-   - Deploys the Docker container to the Docker server (VPS).
+   - Deploys the Docker container to the **Docker Server**, where Nginx serves the static website.
 
 ---
 
@@ -50,7 +51,7 @@ Before setting up the pipeline, ensure you have the following tools installed an
 - **Three VPS Servers**:
   - **Jenkins Server**: For running the CI/CD pipeline.
   - **SonarQube Server**: For code quality analysis.
-  - **Docker Server**: For hosting the deployed application.
+  - **Docker Server**: For hosting the deployed application and serving it using Nginx.
 
 - **GitHub Repository**:
   - Ensure your repository is properly set up and accessible by Jenkins.
@@ -168,6 +169,13 @@ Before setting up the pipeline, ensure you have the following tools installed an
      docker run -d -p 80:80 static-website
      ```
 
+4. **Deploy to Docker Server**:
+   - Push the Docker image to a container registry (optional) or directly deploy it to the Docker Server:
+     ```bash
+     docker build -t static-website .
+     docker run -d -p 80:80 static-website
+     ```
+
 ---
 
 ### **4. Define the Jenkins Pipeline**
@@ -205,7 +213,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                echo 'Deploying application...'
+                echo 'Deploying application to Docker Server...'
                 script {
                     docker.image(DOCKER_IMAGE).run('-p 80:80')
                 }
@@ -221,8 +229,8 @@ pipeline {
 
 1. Jenkins pulls the latest code from GitHub.
 2. The pipeline runs a static code analysis using SonarQube to detect vulnerabilities.
-3. If the code passes the analysis, Jenkins builds a Docker image.
-4. Finally, the Docker container is deployed to the Docker server (VPS).
+3. If the code passes the analysis, Jenkins builds a Docker image using the official **Nginx** image.
+4. Finally, the Docker container is deployed to the **Docker Server**, where Nginx serves the static website on port 80.
 
 ---
 
@@ -242,3 +250,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 For questions or feedback, feel free to reach out:
 - GitHub: [@zxJar](https://github.com/zxJar)
+
