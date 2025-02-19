@@ -1,18 +1,11 @@
-# Base image
-FROM node:16
+# Use the official Nginx image
+FROM nginx:alpine
 
-# Set working directory
-WORKDIR /app
+# Copy static files to the default Nginx public folder
+COPY . /usr/share/nginx/html
 
-# Copy package.json and install dependencies
-COPY package*.json ./
-RUN npm install
+# Expose port 80
+EXPOSE 80
 
-# Copy the rest of the application code
-COPY . .
-
-# Expose the application port
-EXPOSE 3000
-
-# Start the application
-CMD ["npm", "start"]
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
