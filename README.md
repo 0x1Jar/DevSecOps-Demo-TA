@@ -192,7 +192,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/zxJar/DevSecOps-Demo-TA.git'
+                git branch: 'main', url: 'https://github.com/username/<Repository>.git'
             }
         }
         stage('SonarQube Analysis') {
