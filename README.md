@@ -16,6 +16,27 @@ This setup ensures efficient development workflows, improved code quality, and s
 
 ---
 
+## **Security Best Practices**
+
+This project follows these security best practices to protect sensitive information:
+
+1. **Environment Variables**: All sensitive information such as API keys, tokens, and passwords are stored in environment variables, not in the code.
+   - Copy `.env.example` to `.env` and add your actual credentials
+   - The `.env` file is excluded from Git via `.gitignore`
+
+2. **Jenkins Credentials**: All sensitive information in Jenkins is stored using the Jenkins Credentials Manager.
+   - SonarQube tokens
+   - GitHub credentials
+   - Docker registry credentials
+
+3. **No Hardcoded Secrets**: The codebase does not contain any hardcoded secrets or credentials.
+
+4. **Proper .gitignore**: A comprehensive `.gitignore` file prevents sensitive files from being committed to the repository.
+
+5. **Secure Communication**: All services communicate over HTTPS/SSL.
+
+---
+
 ## **Tools Used**
 
 - **Jenkins**: Automates the CI/CD pipeline (hosted on a dedicated VPS).
