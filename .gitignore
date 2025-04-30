@@ -1,0 +1,50 @@
+# Dependency directories
+node_modules/
+venv/
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# IDE files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Log files
+*.log
+logs/
+
+# Build directories
+dist/
+build/
+
+# Credentials and secrets
+*.pem
+*.key
+*.p12
+*.pfx
+*.cer
+*.crt
+*.keystore
+*credentials*
+*secret*
+*token*
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
