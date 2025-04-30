@@ -1,0 +1,30 @@
+# Version control
+.git
+.gitignore
+
+# Development files
+node_modules
+*.log
+*.md
+LICENSE
+Jenkinsfile
+sonar-project.properties*
+.env*
+
+# IDE files
+.idea
+.vscode
+*.sublime-*
+
+# Build artifacts
+dist
+build
+
+# Test files
+test
+tests
+__tests__
+coverage
+
+# Documentation
+docs
