@@ -1,0 +1,23 @@
+{
+  "name": "devsecops-demo",
+  "version": "1.0.0",
+  "description": "DevSecOps Demo Project",
+  "scripts": {
+    "optimize-images": "node scripts/optimize-images.js",
+    "minify-css": "node scripts/minify-css.js",
+    "minify-js": "node scripts/minify-js.js",
+    "build": "npm run optimize-images && npm run minify-css && npm run minify-js",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "clean-css": "^5.3.2",
+    "imagemin": "^8.0.1",
+    "imagemin-webp": "^8.0.0",
+    "terser": "^5.16.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "private": true
+}
