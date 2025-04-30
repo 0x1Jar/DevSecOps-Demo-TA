@@ -2,12 +2,20 @@ pipeline {
     agent any
     environment {
         DOCKER_IMAGE = 'static-website'
+        // Using Jenkins credential store for sensitive tokens
         SONARQUBE_TOKEN = credentials('sonarqube-token')
     }
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/username/<Repository>.git'
+                // Use credentials for repository access
+                withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                    sh '''
+                        git config --global credential.helper cache
+                        echo "https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com" > ~/.git-credentials
+                    '''
+                    git branch: 'main', url: 'https://github.com/username/<Repository>.git'
+                }
             }
         }
         stage('SonarQube Analysis') {
