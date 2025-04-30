@@ -29,11 +29,17 @@ This project follows these security best practices to protect sensitive informat
    - GitHub credentials
    - Docker registry credentials
 
-3. **No Hardcoded Secrets**: The codebase does not contain any hardcoded secrets or credentials.
+3. **SonarQube Configuration**:
+   - The `sonar-project.properties` file is excluded from Git to prevent accidental credential leaks
+   - Use the `sonar-project.properties.template` as a reference to create your local configuration
+   - In Jenkins, SonarQube credentials are injected at runtime using the Credentials Manager
+   - Never commit the actual SonarQube token to the repository
 
-4. **Proper .gitignore**: A comprehensive `.gitignore` file prevents sensitive files from being committed to the repository.
+4. **No Hardcoded Secrets**: The codebase does not contain any hardcoded secrets or credentials.
 
-5. **Secure Communication**: All services communicate over HTTPS/SSL.
+5. **Proper .gitignore**: A comprehensive `.gitignore` file prevents sensitive files from being committed to the repository.
+
+6. **Secure Communication**: All services communicate over HTTPS/SSL.
 
 ---
 
