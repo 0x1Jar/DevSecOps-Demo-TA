@@ -270,5 +270,5 @@ This project is licensed under the [MIT License](LICENSE).
 ## **Contact**
 
 For questions or feedback, feel free to reach out:
-- GitHub: [@zxJar](https://github.com/zxJar)
+- GitHub: [@0x1Jar](https://github.com/0x1Jar)
 
