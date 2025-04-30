@@ -1,0 +1,97 @@
+/* This CSS file contains intentional vulnerabilities for SonarQube to detect */
+
+/* Vulnerability 1: Duplicate selectors */
+.button {
+    background-color: blue;
+    color: white;
+}
+
+.button {
+    padding: 10px;
+    margin: 5px;
+}
+
+/* Vulnerability 2: Empty rules */
+.empty-rule {
+}
+
+/* Vulnerability 3: Overqualified selectors */
+div.container {
+    width: 100%;
+}
+
+/* Vulnerability 4: Vendor prefixes without standard property */
+.box {
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    /* Missing standard border-radius property */
+}
+
+/* Vulnerability 5: !important overuse */
+.important-text {
+    color: red !important;
+    font-weight: bold !important;
+    font-size: 16px !important;
+}
+
+/* Vulnerability 6: Too many font-size declarations */
+body {
+    font-size: 14px;
+}
+.header {
+    font-size: 18px;
+}
+.footer {
+    font-size: 12px;
+}
+.sidebar {
+    font-size: 13px;
+}
+.content {
+    font-size: 15px;
+}
+.title {
+    font-size: 24px;
+}
+.subtitle {
+    font-size: 20px;
+}
+.small-text {
+    font-size: 10px;
+}
+.large-text {
+    font-size: 30px;
+}
+.medium-text {
+    font-size: 16px;
+}
+
+/* Vulnerability 7: Potentially unsafe CSS */
+input[type="password"] {
+    background-image: url("http://example.com/background.png");
+}
+
+/* Vulnerability 8: Unused CSS */
+.never-used-class {
+    display: none;
+    visibility: hidden;
+}
+
+/* Vulnerability 9: Too many colors */
+.color1 { color: #ff0000; }
+.color2 { color: #00ff00; }
+.color3 { color: #0000ff; }
+.color4 { color: #ffff00; }
+.color5 { color: #ff00ff; }
+.color6 { color: #00ffff; }
+.color7 { color: #f0f0f0; }
+.color8 { color: #0f0f0f; }
+.color9 { color: #555555; }
+.color10 { color: #999999; }
+.color11 { color: #333333; }
+.color12 { color: #666666; }
+
+/* Vulnerability 10: Overly complex selectors */
+.main-content .sidebar .widget .widget-content .list .list-item .list-item-link:hover {
+    text-decoration: underline;
+}
