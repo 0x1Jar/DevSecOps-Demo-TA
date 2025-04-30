@@ -44,6 +44,11 @@ build/
 *secret*
 *token*
 
+# SonarQube - exclude actual properties file with credentials
+# but keep the template
+sonar-project.properties
+!sonar-project.properties.template
+
 # Temporary files
 *.tmp
 *.temp
