@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vulnerable Page</title>
+    <meta charset="utf-8">
+    <!-- Vulnerability 1: Inline JavaScript -->
+    <script>
+        // Insecure storage of sensitive data
+        localStorage.setItem("userToken", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9");
+        
+        // XSS vulnerability
+        function showMessage() {
+            var userInput = document.getElementById("userInput").value;
+            document.getElementById("message").innerHTML = userInput;
+        }
+    </script>
+    <!-- Vulnerability 2: Inline CSS -->
+    <style>
+        body {
+            background-color: white;
+            color: black;
+            font-family: Arial, sans-serif;
+        }
+        /* Duplicate selectors */
+        .button {
+            background-color: blue;
+            color: white;
+        }
+        .button {
+            padding: 10px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Vulnerability 3: Missing CSRF protection -->
+    <form action="https://example.com/api/update" method="POST">
+        <input type="text" name="username" value="admin">
+        <input type="hidden" name="isAdmin" value="true">
+        <button type="submit">Update Profile</button>
+    </form>
+    
+    <!-- Vulnerability 4: Insecure iframe -->
+    <iframe src="http://example.com" width="500" height="300"></iframe>
+    
+    <!-- Vulnerability 5: Outdated library -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    
+    <!-- Vulnerability 6: Insecure input handling -->
+    <div>
+        <input type="text" id="userInput" placeholder="Enter your message">
+        <button onclick="showMessage()">Show Message</button>
+        <div id="message"></div>
+    </div>
+    
+    <!-- Vulnerability 7: Hard-coded credentials in comments -->
+    <!-- Database password: db_password123 -->
+    <!-- API Key: 1234567890abcdef -->
+    
+    <!-- Vulnerability 8: Insecure links -->
+    <a href="javascript:alert('Hello')">Click Me</a>
+    
+    <!-- Vulnerability 9: Missing security headers -->
+    <img src="image.jpg" onerror="alert('Image failed to load')">
+    
+    <!-- Vulnerability 10: Insecure form -->
+    <form action="http://example.com/login" method="GET">
+        <input type="text" name="username" placeholder="Username">
+        <input type="password" name="password" placeholder="Password">
+        <button type="submit">Login</button>
+    </form>
+    
+    <script src="js/vulnerable.js"></script>
+</body>
+</html>
