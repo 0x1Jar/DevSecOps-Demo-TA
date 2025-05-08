@@ -2,6 +2,10 @@
 
 This document describes the intentional vulnerabilities added to this project for demonstration purposes. These vulnerabilities are designed to be detected by SonarQube during code analysis.
 
+## SQL Injection Vulnerabilities
+
+This project contains extensive SQL injection vulnerabilities in multiple languages to ensure SonarQube can detect them effectively. SQL injection is a code injection technique that exploits vulnerabilities in applications that interact with databases, allowing attackers to execute malicious SQL statements.
+
 ## Purpose
 
 The purpose of these vulnerabilities is to:
@@ -13,6 +17,17 @@ The purpose of these vulnerabilities is to:
 ## Vulnerability Files
 
 The following files contain intentional vulnerabilities:
+
+### SQL Injection Specific Files
+
+These files focus specifically on SQL injection vulnerabilities in various languages:
+
+- **JavaScript SQL Injection** (`js/sql-injection-examples.js`): Contains 10 different SQL injection patterns
+- **PHP SQL Injection** (`php/sql-injection-examples.php`): Contains various SQL injection vulnerabilities in PHP
+- **Python SQL Injection** (`python/sql-injection-examples.py`): Contains SQL injection in a Flask application
+- **Java SQL Injection** (`java/SqlInjectionExamples.java`): Contains SQL injection in JDBC code
+- **Ruby SQL Injection** (`ruby/sql_injection_examples.rb`): Contains SQL injection in Ruby code
+- **C# SQL Injection** (`csharp/SqlInjectionExamples.cs`): Contains SQL injection in ADO.NET code
 
 ### JavaScript Vulnerabilities (`js/vulnerable.js`)
 - Hard-coded credentials
