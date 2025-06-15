@@ -115,11 +115,23 @@
             </form>
         </section>
         
+        <section class="mb-5">
+            <h2>SQL Injection Example</h2>
+            <p>This form sends a GET request to a server that uses the provided username directly in a SQL query. An attacker can inject SQL code through the input field to manipulate the SQL query.</p>
+            <form action="/search" method="GET">
+                <div class="form-group">
+                    <label for="sqlUsername">Username:</label>
+                    <input class="form-control" type="text" name="username" placeholder="Enter username" id="sqlUsername">
+                </div>
+                <button class="btn btn-primary" type="submit">Search</button>
+            </form>
+        </section>
+        
         <script src="js/vulnerable.js"></script>
     </main>
     
     <footer class="text-center mt-5">
-        <p>&copy; 2024 Vulnerable Page. All rights reserved.</p>
+        <p>&copy; 2025 Vulnerable Page. All rights reserved.</p>
     </footer>
     
     <!-- Optional JavaScript -->
