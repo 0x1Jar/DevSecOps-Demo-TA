@@ -1,27 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Vulnerable Page</title>
     <meta charset="utf-8">
-    <!-- Vulnerability 1: Inline JavaScript -->
-    <script>
-        // Insecure storage of sensitive data
-        localStorage.setItem("userToken", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9");
-        
-        // XSS vulnerability
-        function showMessage() {
-            var userInput = document.getElementById("userInput").value;
-            document.getElementById("message").innerHTML = userInput;
-        }
-    </script>
-    <!-- Vulnerability 2: Inline CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    
     <style>
-        body {
-            background-color: white;
-            color: black;
-            font-family: Arial, sans-serif;
-        }
-        /* Duplicate selectors */
+        /* Vulnerability 2: Inline CSS with duplicate selectors can cause confusion in style application. */
         .button {
             background-color: blue;
             color: white;
@@ -31,45 +19,113 @@
             margin: 5px;
         }
     </style>
+    
+    <script>
+        // Vulnerability 1: Inline JavaScript - Insecure storage of sensitive data in localStorage can be easily accessed by any script on the same domain.
+        localStorage.setItem("userToken", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9");
+        
+        // Vulnerability 1: Inline JavaScript - XSS vulnerability where user input is directly inserted into the DOM using innerHTML without sanitization.
+        function showMessage() {
+            var userInput = document.getElementById("userInput").value;
+            document.getElementById("message").innerHTML = userInput;
+        }
+    </script>
 </head>
-<body>
-    <!-- Vulnerability 3: Missing CSRF protection -->
-    <form action="https://example.com/api/update" method="POST">
-        <input type="text" name="username" value="admin">
-        <input type="hidden" name="isAdmin" value="true">
-        <button type="submit">Update Profile</button>
-    </form>
+<body class="container mt-5">
+    <header class="text-center mb-5">
+        <h1>Vulnerable Page</h1>
+    </header>
     
-    <!-- Vulnerability 4: Insecure iframe -->
-    <iframe src="http://example.com" width="500" height="300"></iframe>
+    <main>
+        <section class="mb-5">
+            <h2>Vulnerable Form (Missing CSRF protection)</h2>
+            <p>This form is missing CSRF protection, which makes it vulnerable to Cross-Site Request Forgery attacks where an attacker can make unauthorized actions on behalf of a logged-in user.</p>
+            <!-- Vulnerability 3: Missing CSRF protection -->
+            <form action="https://example.com/api/update" method="POST">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input class="form-control" type="text" name="username" value="admin" id="username">
+                </div>
+                <input type="hidden" name="isAdmin" value="true">
+                <button class="btn btn-primary" type="submit">Update Profile</button>
+            </form>
+        </section>
+        
+        <section class="mb-5">
+            <h2>Insecure iFrame</h2>
+            <p>This iframe uses an insecure HTTP source which can make the page vulnerable to man-in-the-middle attacks where an attacker could intercept and modify the iframe content.</p>
+            <!-- Vulnerability 4: Insecure iframe -->
+            <iframe src="http://example.com" width="500" height="300"></iframe>
+        </section>
+        
+        <section class="mb-5">
+            <h2>Outdated jQuery Library</h2>
+            <p>This page uses an outdated jQuery library which may contain known security vulnerabilities. It is important to keep libraries up to date to protect against such vulnerabilities.</p>
+            <p><strong>Note:</strong> The outdated jQuery library has been removed from this section because it was redundant and was also included in the Bootstrap dependencies.</p>
+        </section>
+        
+        <section class="mb-5">
+            <h2>Insecure Input Handling (XSS Vulnerability)</h2>
+            <p>This section demonstrates an XSS vulnerability where user input is directly inserted into the DOM using innerHTML. An attacker can inject malicious scripts through the input field.</p>
+            <!-- Vulnerability 6: Insecure input handling -->
+            <div class="form-group">
+                <label for="userInput">Enter your message:</label>
+                <input class="form-control" type="text" id="userInput" placeholder="Enter your message">
+            </div>
+            <button class="btn btn-primary" onclick="showMessage()">Show Message</button>
+            <div id="message" class="mt-3"></div>
+        </section>
+        
+        <section class="mb-5">
+            <h2>Hard-coded Credentials in Comments</h2>
+            <p>This section shows hard-coded credentials (such as database passwords or API keys) in HTML comments. Such information can be easily viewed by anyone who inspects the page source.</p>
+            <!-- Vulnerability 7: Hard-coded credentials in comments -->
+            <!-- Database password: db_password123 -->
+            <!-- API Key: 1234567890abcdef -->
+        </section>
+        
+        <section class="mb-5">
+            <h2>Insecure Links</h2>
+            <p>This link uses a `javascript:` URL which can execute arbitrary JavaScript code when clicked. Such links can be used for malicious purposes.</p>
+            <!-- Vulnerability 8: Insecure links -->
+            <a class="btn btn-danger" href="javascript:alert('Hello')">Click Me</a>
+        </section>
+        
+        <section class="mb-5">
+            <h2>Missing Security Headers (onerror attribute)</h2>
+            <p>The `onerror` attribute here can be used for XSS attacks if the image fails to load and executes the `alert` function.</p>
+            <!-- Vulnerability 9: Missing security headers -->
+            <img src="image.jpg" onerror="alert('Image failed to load')" class="img-fluid">
+        </section>
+        
+        <section class="mb-5">
+            <h2>Insecure Form (GET method for login)</h2>
+            <p>This form uses the GET method for login, which makes the username and password visible in the URL and server logs.</p>
+            <!-- Vulnerability 10: Insecure form -->
+            <form action="http://example.com/login" method="GET">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input class="form-control" type="text" name="username" placeholder="Username" id="username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input class="form-control" type="password" name="password" placeholder="Password" id="password">
+                </div>
+                <button class="btn btn-primary" type="submit">Login</button>
+            </form>
+        </section>
+        
+        <script src="js/vulnerable.js"></script>
+    </main>
     
-    <!-- Vulnerability 5: Outdated library -->
-    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <footer class="text-center mt-5">
+        <p>&copy; 2024 Vulnerable Page. All rights reserved.</p>
+    </footer>
     
-    <!-- Vulnerability 6: Insecure input handling -->
-    <div>
-        <input type="text" id="userInput" placeholder="Enter your message">
-        <button onclick="showMessage()">Show Message</button>
-        <div id="message"></div>
-    </div>
-    
-    <!-- Vulnerability 7: Hard-coded credentials in comments -->
-    <!-- Database password: db_password123 -->
-    <!-- API Key: 1234567890abcdef -->
-    
-    <!-- Vulnerability 8: Insecure links -->
-    <a href="javascript:alert('Hello')">Click Me</a>
-    
-    <!-- Vulnerability 9: Missing security headers -->
-    <img src="image.jpg" onerror="alert('Image failed to load')">
-    
-    <!-- Vulnerability 10: Insecure form -->
-    <form action="http://example.com/login" method="GET">
-        <input type="text" name="username" placeholder="Username">
-        <input type="password" name="password" placeholder="Password">
-        <button type="submit">Login</button>
-    </form>
-    
-    <script src="js/vulnerable.js"></script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 </body>
 </html>
