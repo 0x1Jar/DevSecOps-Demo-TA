@@ -2,6 +2,8 @@
 node_modules/
 venv/
 
+custom_wordlist.txt
+
 # Environment variables
 .env
 .env.local
