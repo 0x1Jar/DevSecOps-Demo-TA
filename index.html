@@ -9,8 +9,11 @@
   <meta name="keywords" content="global, template, html, sass, jquery">
   <meta name="author" content="Bucky Maler">
   <meta http-equiv="Access-Control-Allow-Origin" content="*">
+  <meta name="generator" content="WordPress 5.4.2">
   <link rel="stylesheet" href="assets/css/main.css">
   <!-- Test credentials: admin@example.com / P@ssw0rd123! -->
+  <!-- Backup: https://example.com/backup_2024.zip -->
+  <!-- API_KEY: a1b2c3d4e5f6g7h8i9j0 -->
 </head>
 <body>
 
@@ -185,7 +188,7 @@
             <div class="hire">
               <h2>You want us to do</h2>
               <!-- checkout formspree.io for easy form setup -->
-              <form class="work-request">
+              <form class="work-request" action="/admin.php">
                 <div class="work-request--options">
                   <span class="options-a">
                     <input id="opt-1" type="checkbox" value="app design">
@@ -291,5 +294,12 @@ function parseQuery() {
 </script>
 <script>window.jQuery || document.write('<script src="assets/js/vendor/jquery-2.2.4.min.js"><\/script>')</script>
 <script src="assets/js/functions-min.js"></script>
+<script>
+// Vulnerable debug parameter handling
+function loadDebugInfo() {
+  const debugParam = new URLSearchParams(window.location.search).get('debug');
+  document.write(`DEBUG: ${debugParam}`);
+}
+</script>
 </body>
 </html>
