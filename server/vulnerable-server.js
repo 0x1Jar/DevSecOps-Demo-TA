@@ -1,10 +1,12 @@
 // This file contains intentional server-side vulnerabilities for SonarQube to detect
 
 const express = require('express');
+const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 const app = express();
 const port = 3000;
+const helmet = require('helmet'); // For security headers
 
 // FIXED: Disable the X-Powered-By header to prevent information disclosure.
 app.disable('x-powered-by');
@@ -13,22 +15,35 @@ app.disable('x-powered-by');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// FIXED: Use Helmet to set various security headers by default.
+app.use(helmet());
+
 // Vulnerability 1: Hard-coded credentials
-const DB_USER = "admin";
-const DB_PASSWORD = "password123";
-const API_SECRET = "my-super-secret-api-key";
+// FIXED: Load secrets from environment variables, not hard-coded.
+const DB_USER = process.env.DB_USER;
+const DB_PASSWORD = process.env.DB_PASSWORD;
+const API_SECRET = process.env.API_SECRET;
 
 // Vulnerability 2: Insecure file operations
 app.get('/download', (req, res) => {
     const fileName = req.query.file;
-    // Path traversal vulnerability
-    const filePath = __dirname + '/files/' + fileName;
-    
+
+    // FIXED: Path traversal vulnerability. Sanitize the filename and ensure it's within the intended directory.
+    const safeFileName = path.basename(fileName);
+    const publicDir = path.join(__dirname, 'files');
+    const filePath = path.join(publicDir, safeFileName);
+
+    if (filePath.indexOf(publicDir) !== 0) {
+        return res.status(400).send('Invalid path');
+    }
+
     // Insecure file read
     fs.readFile(filePath, (err, data) => {
         if (err) {
             return res.status(404).send('File not found');
         }
+        // Set appropriate headers for file download
+        res.setHeader('Content-Disposition', `attachment; filename="${safeFileName}"`);
         res.send(data);
     });
 });
@@ -61,10 +76,12 @@ app.get('/ping', (req, res) => {
 app.get('/users', (req, res) => {
     const userId = req.query.id;
     // SQL injection vulnerability
-    const query = `SELECT * FROM users WHERE id = ${userId}`;
-    
+    // FIXED: Use parameterized queries to prevent SQL injection.
+    const query = 'SELECT * FROM users WHERE id = ?';
+
     // Simulated database query
-    executeQuery(query)
+    // The database library (e.g., 'mysql2', 'pg') would handle parameterization.
+    executeQuery(query, [userId])
         .then(results => res.json(results))
         .catch(err => res.status(500).send('Database error'));
 });
@@ -86,27 +103,39 @@ app.post('/register', (req, res) => {
 app.post('/encrypt', (req, res) => {
     const data = req.body.data;
     
-    // Weak encryption algorithm (MD5)
-    const hash = crypto.createHash('md5').update(data).digest('hex');
+    // FIXED: Weak hashing algorithm (MD5). Use a strong algorithm like SHA256.
+    const hash = crypto.createHash('sha256').update(data).digest('hex');
     
     res.json({ hash });
 });
 
 // Vulnerability 7: No input validation
 app.post('/profile', (req, res) => {
-    const profile = req.body;
-    
-    // No validation of input
-    updateProfile(profile)
+    // FIXED: Add input validation.
+    const { email, age } = req.body;
+
+    if (!email || typeof email !== 'string' || !email.includes('@')) {
+        return res.status(400).json({ error: 'Invalid email format.' });
+    }
+    if (age === undefined || typeof age !== 'number' || age < 0 || age > 120) {
+        return res.status(400).json({ error: 'Invalid age.' });
+    }
+
+    // Now update the profile with validated data
+    updateProfile({ email, age })
         .then(() => res.json({ success: true }))
         .catch(err => res.status(500).send('Update error'));
 });
 
 // Vulnerability 8: Insecure cookie settings
 app.get('/login', (req, res) => {
-    // Insecure cookie (missing HttpOnly, Secure flags)
-    res.cookie('sessionId', 'abc123', { 
-        maxAge: 3600000
+    // FIXED: Insecure cookie. Add HttpOnly, Secure, and SameSite flags.
+    const sessionId = crypto.randomBytes(16).toString('hex');
+    res.cookie('sessionId', sessionId, {
+        maxAge: 3600000, // 1 hour
+        httpOnly: true,  // Prevents client-side script access
+        secure: process.env.NODE_ENV === 'production', // Only send over HTTPS in production
+        sameSite: 'strict' // Mitigates CSRF
     });
     
     res.send('Logged in');
@@ -119,18 +148,15 @@ app.get('/error', (req, res) => {
         const obj = null;
         obj.property = 'value';
     } catch (err) {
-        // Detailed error exposure
-        res.status(500).json({
-            error: err.message,
-            stack: err.stack,
-            details: 'Error occurred in server module'
-        });
+        // FIXED: Detailed error exposure. Log the full error but send a generic response.
+        console.error(err); // Log the stack trace for debugging
+        res.status(500).send('An internal server error occurred.');
     }
 });
 
 // Vulnerability 10: Missing security headers
 app.get('/', (req, res) => {
-    // No security headers set
+    // FIXED: Security headers are now set by Helmet middleware.
     res.send('Welcome to the vulnerable server');
 });
 
@@ -140,6 +166,6 @@ app.listen(port, () => {
 });
 
 // Helper functions to avoid actual errors
-function executeQuery(query) { return Promise.resolve([]); }
+function executeQuery(query, params) { return Promise.resolve([]); }
 function saveUser(user) { return Promise.resolve(); }
 function updateProfile(profile) { return Promise.resolve(); }
