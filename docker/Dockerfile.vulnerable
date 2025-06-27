@@ -19,9 +19,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Vulnerability 5: Using ADD instead of COPY for local files
-# FIXED: Use COPY for local files to avoid potential risks of ADD (like URL fetching or tar extraction).
-COPY --chown=appuser:appuser . .
 
 # Vulnerability 13: Not pinning package versions
 # FIXED: Use a requirements.txt file to pin package versions for reproducible builds.
