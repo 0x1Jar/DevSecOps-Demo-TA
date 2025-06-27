@@ -10,7 +10,7 @@ RUN useradd --create-home --shell /bin/bash appuser
 USER appuser
 WORKDIR /home/appuser/app
 
-# Vulnerability 4: Installing unnecessary packages
+# Vulnerability 3: Installing unnecessary packages
 # FIXED: Install only necessary packages and clean up apt cache.
 # Use --no-install-recommends to avoid extra packages.
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -19,28 +19,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-
-
-
-# Vulnerability 8: Hardcoded credentials in commands
+# Vulnerability 4: Hardcoded credentials in commands
 # FIXED: Removed hardcoded credentials. Use build secrets if needed.
 
-# Vulnerability 9: Exposing too many ports
+# Vulnerability 5: Exposing too many ports
 # FIXED: Expose only the port the application needs.
 EXPOSE 8080
 
-# Vulnerability 10: Running multiple services in a single container
+# Vulnerability 6: Running multiple services in a single container
 # FIXED: Run a single application process per container.
 CMD ["python3", "app.py"]
 
-# Vulnerability 11: Not specifying a health check
-# FIXED: Add a HEALTHCHECK to allow Docker to verify application status.
-HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
-  CMD curl --fail http://localhost:8080/health || exit 1
-
-# Vulnerability 12: Using deprecated instructions
+# Vulnerability 7: Using deprecated instructions
 # FIXED: Use LABEL instead of the deprecated MAINTAINER instruction.
 LABEL maintainer="Your Name <youremail@example.com>"
 
-# Vulnerability 14: Storing secrets in the image
+# Vulnerability 8: Storing secrets in the image
 # FIXED: Removed copying of secrets into the image. Mount secrets at runtime.
