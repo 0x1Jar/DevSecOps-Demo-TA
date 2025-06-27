@@ -13,6 +13,11 @@ RUN apk add --no-cache curl
 # The .dockerignore file will prevent sensitive files from being included.
 COPY . .
 
+# Set secure permissions on the files within the build stage itself.
+# This ensures that the artifacts copied to the final stage are already secured.
+RUN find /app -type d -exec chmod 755 {} + && \
+    find /app -type f -exec chmod 644 {} +
+
 # --- Production Stage ---
 # Use the official Nginx image for the final, lean image.
 FROM nginx:alpine
