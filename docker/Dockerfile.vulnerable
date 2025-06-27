@@ -1,44 +1,55 @@
-# This Dockerfile contains intentional vulnerabilities for SonarQube to detect
+# This is the SECURE version of the Dockerfile.
 
 # Vulnerability 1: Using a non-specific or latest tag
-FROM ubuntu:latest
+# FIXED: Pin to a specific, trusted base image version.
+FROM ubuntu:22.04
 
 # Vulnerability 2: Running as root
-# Missing: USER directive to specify non-root user
+# FIXED: Create a non-root user and switch to it.
+RUN useradd --create-home --shell /bin/bash appuser
+USER appuser
+WORKDIR /home/appuser/app
 
 # Vulnerability 4: Installing unnecessary packages
 # FIXED: Install only necessary packages and clean up apt cache.
+# Use --no-install-recommends to avoid extra packages.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
+    python3 \
+    python3-pip \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Vulnerability 5: Using ADD instead of COPY for local files
-ADD . /app
+# FIXED: Use COPY for local files to avoid potential risks of ADD (like URL fetching or tar extraction).
+COPY --chown=appuser:appuser . .
 
-# Vulnerability 6: Not removing package manager cache
-# Missing: apt-get clean and rm -rf /var/lib/apt/lists/*
+# Vulnerability 13: Not pinning package versions
+# FIXED: Use a requirements.txt file to pin package versions for reproducible builds.
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Vulnerability 7: Using chmod 777
-RUN chmod -R 777 /app
+# FIXED: Use appropriate, non-permissive permissions.
+RUN chmod -R 755 .
 
 # Vulnerability 8: Hardcoded credentials in commands
-RUN echo "machine github.com login githubuser password githubpassword123" > ~/.netrc
+# FIXED: Removed hardcoded credentials. Use build secrets if needed.
 
 # Vulnerability 9: Exposing too many ports
+# FIXED: Expose only the port the application needs.
 EXPOSE 8080
 
 # Vulnerability 10: Running multiple services in a single container
-CMD service ssh start && service apache2 start && tail -f /dev/null
+# FIXED: Run a single application process per container.
+CMD ["python3", "app.py"]
 
 # Vulnerability 11: Not specifying a health check
-# Missing: HEALTHCHECK instruction
+# FIXED: Add a HEALTHCHECK to allow Docker to verify application status.
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+  CMD curl --fail http://localhost:8080/health || exit 1
 
 # Vulnerability 12: Using deprecated instructions
-MAINTAINER John Doe <john@example.com>
-
-# Vulnerability 13: Not pinning package versions
-RUN pip install flask requests pymongo
+# FIXED: Use LABEL instead of the deprecated MAINTAINER instruction.
+LABEL maintainer="Your Name <youremail@example.com>"
 
 # Vulnerability 14: Storing secrets in the image
-COPY private_key.pem /app/certs/
-COPY .aws/credentials /root/.aws/
+# FIXED: Removed copying of secrets into the image. Mount secrets at runtime.
