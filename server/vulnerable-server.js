@@ -56,7 +56,9 @@ app.get('/ping', (req, res) => {
 
     // FIXED: Use spawn instead of exec to prevent command injection.
     // Arguments are passed as an array, not interpreted by a shell.
-    const ping = require('child_process').spawn('ping', ['-c', '4', host]);
+    // FIXED (Path Injection): Use the absolute path to the command to avoid relying on the system's PATH variable.
+    const PING_PATH = '/bin/ping'; // Use absolute path for security
+    const ping = require('child_process').spawn(PING_PATH, ['-c', '4', host]);
     let output = '';
 
     ping.stdout.on('data', (data) => {
