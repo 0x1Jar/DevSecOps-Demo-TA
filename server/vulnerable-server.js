@@ -6,6 +6,9 @@ const crypto = require('crypto');
 const app = express();
 const port = 3000;
 
+// FIXED: Disable the X-Powered-By header to prevent information disclosure.
+app.disable('x-powered-by');
+
 // Middleware to parse JSON and URL-encoded bodies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -35,9 +38,22 @@ app.get('/ping', (req, res) => {
     const host = req.query.host;
     // Command injection vulnerability
     const cmd = 'ping -c 4 ' + host;
-    
-    require('child_process').exec(cmd, (err, stdout, stderr) => {
-        res.send(stdout);
+
+    // FIXED: Use spawn instead of exec to prevent command injection.
+    // Arguments are passed as an array, not interpreted by a shell.
+    const ping = require('child_process').spawn('ping', ['-c', '4', host]);
+    let output = '';
+
+    ping.stdout.on('data', (data) => {
+        output += data.toString();
+    });
+
+    ping.stderr.on('data', (data) => {
+        output += data.toString();
+    });
+
+    ping.on('close', (code) => {
+        res.send(output);
     });
 });
 
@@ -57,8 +73,8 @@ app.get('/users', (req, res) => {
 app.post('/register', (req, res) => {
     const user = req.body;
     
-    // Insecure random token generation
-    user.token = Math.random().toString(36).substring(2);
+    // FIXED: Insecure random token generation. Use crypto.randomBytes for secure tokens.
+    user.token = crypto.randomBytes(16).toString('hex');
     
     // Save user (simulated)
     saveUser(user)
