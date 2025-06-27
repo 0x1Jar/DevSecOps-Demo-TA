@@ -25,9 +25,6 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 # and no sensitive files like .git, Jenkinsfile, etc., ever enter the final image.
 COPY --from=build --chown=nginx:nginx /app/ /usr/share/nginx/html/
 
-# Switch to non-root user
-USER nginx
-
 # Expose port 80
 EXPOSE 80
 
