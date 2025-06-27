@@ -16,6 +16,7 @@ custom_wordlist.txt
 .vscode/
 *.sublime-project
 *.sublime-workspace
+connectedMode.json
 
 # OS generated files
 .DS_Store
