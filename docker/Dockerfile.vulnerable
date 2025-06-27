@@ -6,22 +6,11 @@ FROM ubuntu:latest
 # Vulnerability 2: Running as root
 # Missing: USER directive to specify non-root user
 
-# Vulnerability 3: Exposing sensitive information in environment variables
-ENV DB_USER=admin
-ENV DB_PASSWORD=password123
-ENV API_KEY=1234567890abcdef
-
 # Vulnerability 4: Installing unnecessary packages
-RUN apt-get update && apt-get install -y \
+# FIXED: Install only necessary packages and clean up apt cache.
+RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
-    wget \
-    vim \
-    git \
-    ssh \
-    telnet \
-    netcat \
-    nmap \
-    sudo
+    && rm -rf /var/lib/apt/lists/*
 
 # Vulnerability 5: Using ADD instead of COPY for local files
 ADD . /app
@@ -36,7 +25,7 @@ RUN chmod -R 777 /app
 RUN echo "machine github.com login githubuser password githubpassword123" > ~/.netrc
 
 # Vulnerability 9: Exposing too many ports
-EXPOSE 22 80 443 3306 5432 8080
+EXPOSE 8080
 
 # Vulnerability 10: Running multiple services in a single container
 CMD service ssh start && service apache2 start && tail -f /dev/null
