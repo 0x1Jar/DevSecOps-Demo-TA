@@ -20,8 +20,10 @@ function displayUserInput(input) {
 
 // Vulnerability 4: Insecure random values
 function generateRandomToken() {
-    // Using Math.random() for security purposes is insecure
-    return "token_" + Math.random().toString(36).substring(2);
+    // FIXED: Using Math.random() for security purposes is insecure. Use window.crypto.
+    const array = new Uint32Array(1);
+    window.crypto.getRandomValues(array);
+    return "token_" + array[0].toString(36);
 }
 
 // Vulnerability 5: Potential infinite loop
@@ -54,8 +56,13 @@ function calculateTotal(items) {
 
 // Vulnerability 7: Insecure object creation
 function createUserObject(userData) {
-    // Using eval is insecure
-    return eval('(' + userData + ')');
+    // FIXED: Using eval is insecure. Use JSON.parse() instead.
+    try {
+        return JSON.parse(userData);
+    } catch (e) {
+        console.error("Invalid JSON data:", e);
+        return null;
+    }
 }
 
 // Vulnerability 8: Insecure direct object reference
@@ -79,8 +86,10 @@ function processUserData(data) {
 
 // Vulnerability 10: Insecure timeout
 function delayedProcessing(userData) {
-    // Using setTimeout with string argument is insecure
-    setTimeout("processUserData(" + userData + ")", 1000);
+    // FIXED: Using setTimeout with a string argument is insecure. Use a function callback.
+    setTimeout(function() {
+        processUserData(userData);
+    }, 1000);
 }
 
 // Helper functions to avoid actual errors
