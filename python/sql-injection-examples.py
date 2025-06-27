@@ -3,10 +3,17 @@
 This file contains explicit SQL injection vulnerabilities for SonarQube to detect
 """
 
+import os
 import sqlite3
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template_string
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired
 
 app = Flask(__name__)
+# FIXED: Add a secret key for CSRF protection. In production, use an environment variable.
+app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY', 'a-very-secret-key-that-should-be-changed')
+
 
 # Simulate database connection
 def get_db_connection():
@@ -105,6 +112,34 @@ def filter_users(is_active, status=None):
     print(f"Executing query: {sql}")
     return []
 
+# --- CSRF Protection Example ---
+class SearchForm(FlaskForm):
+    """A simple form with CSRF protection enabled by default."""
+    query = StringField('Search Query', validators=[DataRequired()])
+    submit = SubmitField('Search')
+
+@app.route('/secure-search', methods=['GET', 'POST'])
+def secure_search():
+    """
+    This route is protected against CSRF.
+    The form validation will fail if the CSRF token is missing or invalid.
+    """
+    form = SearchForm()
+    if form.validate_on_submit():
+        # Process the form data safely
+        search_query = form.query.data
+        # Here you would perform a safe search, e.g., using parameterized queries
+        return jsonify({"status": "success", "query": search_query})
+
+    # Render a form with the CSRF token included via form.hidden_tag()
+    return render_template_string('''
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            {{ form.query.label }} {{ form.query() }}
+            {{ form.submit() }}
+        </form>
+    ''', form=form)
+
 # Flask routes to demonstrate vulnerabilities
 @app.route('/users/<user_id>')
 def api_get_user(user_id):
@@ -135,4 +170,7 @@ def api_create_user():
     return jsonify({"success": success})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # FIXED: Do not run in debug mode in production. Control with an environment variable.
+    # Set FLASK_DEBUG=1 or FLASK_DEBUG=true in your environment to enable debug mode.
+    debug_mode = os.environ.get('FLASK_DEBUG', 'false').lower() in ['true', '1', 't']
+    app.run(debug=debug_mode)

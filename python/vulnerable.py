@@ -6,12 +6,14 @@ import subprocess
 import pickle
 import hashlib
 import random
+import secrets
+import bcrypt
 import base64
 
 # Vulnerability 1: Hard-coded credentials
-DB_USER = "admin"
-DB_PASSWORD = "password123"
-API_KEY = "1234567890abcdef"
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+API_KEY = os.getenv("API_KEY")
 
 # Vulnerability 2: Command injection
 def ping_host(host):
@@ -39,13 +41,16 @@ def load_object(serialized_data):
 
 # Vulnerability 6: Weak cryptography
 def hash_password(password):
-    # Weak hashing algorithm (MD5)
-    return hashlib.md5(password.encode()).hexdigest()
+    # FIXED: Weak hashing algorithm (MD5). Use a strong, modern hashing algorithm like bcrypt.
+    # A salt is generated and stored with the hash.
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password.encode(), salt)
 
 # Vulnerability 7: Insecure random values
 def generate_token():
     # Insecure random value generation
-    return random.random()
+    # FIXED: Use the secrets module for cryptographically secure random values.
+    return secrets.token_hex(16)  # Generates a 32-character hex token
 
 # Vulnerability 8: Shell injection
 def execute_command(command):
