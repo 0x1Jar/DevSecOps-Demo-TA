@@ -25,11 +25,6 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 # and no sensitive files like .git, Jenkinsfile, etc., ever enter the final image.
 COPY --from=build --chown=nginx:nginx /app/ /usr/share/nginx/html/
 
-# Add security headers
-RUN echo 'add_header X-Frame-Options "SAMEORIGIN";' >> /etc/nginx/conf.d/default.conf && \
-    echo 'add_header X-Content-Type-Options "nosniff";' >> /etc/nginx/conf.d/default.conf && \
-    echo 'add_header X-XSS-Protection "1; mode=block";' >> /etc/nginx/conf.d/default.conf
-
 # Switch to non-root user
 USER nginx
 
