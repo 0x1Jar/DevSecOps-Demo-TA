@@ -19,7 +19,7 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Copy only the necessary static files from the build stage.
 # This is the key security improvement: only application code is copied,
 # and no sensitive files like .git, Jenkinsfile, etc., ever enter the final image.
-COPY --from=build /app/ /usr/share/nginx/html/
+COPY --from=build --chown=nginx:nginx /app/ /usr/share/nginx/html/
 
 # Add security headers
 RUN echo 'add_header X-Frame-Options "SAMEORIGIN";' >> /etc/nginx/conf.d/default.conf && \
