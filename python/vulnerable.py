@@ -109,13 +109,4 @@ if __name__ == "__main__":
     # FIXED: Do not log sensitive information.
     print("Application starting.")
 
-    # Vulnerability 12: Unused variables
-    # FIXED: Removed unused variable.
 
-    # Vulnerability 13: Unreachable code
-    # FIXED: Removed unreachable code.
-
-    # Vulnerability 14: Infinite loop
-    # Commented out to prevent actual infinite loop
-    # while True:
-    #     pass
