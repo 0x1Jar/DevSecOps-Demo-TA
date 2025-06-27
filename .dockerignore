@@ -1,30 +1,19 @@
-# Version control
+# Git
 .git
 .gitignore
 
-# Development files
+# Docker
+Dockerfile
+Dockerfile*
+docker-compose.yml
+
+# Node
 node_modules
-*.log
-*.md
-LICENSE
+npm-debug.log
+
+# Secrets and config
+.env
+*.pem
+sonar-project.properties
+README.md
 Jenkinsfile
-sonar-project.properties*
-.env*
-
-# IDE files
-.idea
-.vscode
-*.sublime-*
-
-# Build artifacts
-dist
-build
-
-# Test files
-test
-tests
-__tests__
-coverage
-
-# Documentation
-docs
