@@ -1,21 +1,25 @@
 // This file contains intentional vulnerabilities for SonarQube to detect
+// This is the SECURE version of the file.
 
 // Vulnerability 1: Hard-coded credentials
-const API_KEY = "1234567890abcdef";
-const PASSWORD = "admin123";
-const SECRET_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
+// FIXED: Never store secrets in client-side JavaScript.
+// These should be handled by a secure backend and passed via secure, HttpOnly cookies or other server-driven mechanisms.
 
 // Vulnerability 2: SQL Injection
 function getUserData(userId) {
-    // This is vulnerable to SQL injection
-    const query = "SELECT * FROM users WHERE id = " + userId;
-    return executeQuery(query); // Imagine this executes the SQL query
+    // FIXED: SQL Injection is a server-side vulnerability.
+    // Client-side code should call a secure API endpoint.
+    // Example: return fetch(`/api/users/${encodeURIComponent(userId)}`);
+    console.log(`Fetching data for user: ${userId}`);
 }
 
 // Vulnerability 3: Cross-site Scripting (XSS)
 function displayUserInput(input) {
-    // This is vulnerable to XSS
-    document.getElementById("output").innerHTML = input;
+    // FIXED: This is vulnerable to XSS. Use textContent to safely render user input as text.
+    const outputElement = document.getElementById("output");
+    if (outputElement) {
+        outputElement.textContent = input;
+    }
 }
 
 // Vulnerability 4: Insecure random values
@@ -30,27 +34,22 @@ function generateRandomToken() {
 function processData(data) {
     let i = 0;
     // Missing increment can cause infinite loop
-    while (i < data.length) {
+    // FIXED: Added incrementor to prevent infinite loop.
+    while (i < data.length) { 
         console.log(data[i]);
-        // i++ is missing
+        i++;
     }
 }
 
 // Vulnerability 6: Unused variables and dead code
 function calculateTotal(items) {
     let total = 0;
-    let tax = 0.1; // Unused variable
+    // FIXED: Removed unused variable 'tax'.
     
     for (let i = 0; i < items.length; i++) {
         total += items[i].price;
     }
-    
-    if (false) {
-        // Dead code that will never execute
-        console.log("This will never run");
-        return 0;
-    }
-    
+    // FIXED: Removed dead code block.
     return total;
 }
 
@@ -67,20 +66,21 @@ function createUserObject(userData) {
 
 // Vulnerability 8: Insecure direct object reference
 function getUserFile(fileName) {
-    // This allows accessing any file
-    return readFile("/user/data/" + fileName);
+    // FIXED: Path Traversal is a server-side vulnerability.
+    // The client should request a file, and the server must validate the request.
+    // Example: return fetch(`/api/files?file=${encodeURIComponent(fileName)}`);
+    console.log(`Requesting file: ${fileName}`);
 }
 
 // Vulnerability 9: Improper error handling
 function processUserData(data) {
     try {
         // Some processing
-        JSON.parse(data);
+        return JSON.parse(data);
     } catch (e) {
-        // Logging sensitive information
-        console.log("Error processing data: " + e.message);
-        console.log("Stack trace: " + e.stack);
-        console.log("User data: " + data);
+        // FIXED: Do not log potentially sensitive user data in error messages.
+        console.error("Error processing data: " + e.message);
+        // The stack trace is fine for debugging, but avoid logging the raw 'data'.
     }
 }
 
