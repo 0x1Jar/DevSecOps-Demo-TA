@@ -3,7 +3,7 @@
 $( document ).ready(function() {
 
   // DOMMouseScroll included for firefox support
-  var canScroll = true,
+  let canScroll = true,
       scrollController = null;
   $(this).on('mousewheel DOMMouseScroll', function(e){
 
@@ -11,7 +11,7 @@ $( document ).ready(function() {
 
       e.preventDefault();
 
-      var delta = (e.originalEvent.wheelDelta) ? -e.originalEvent.wheelDelta : e.originalEvent.detail * 20;
+      let delta = (e.originalEvent.wheelDelta) ? -e.originalEvent.wheelDelta : e.originalEvent.detail * 20;
 
       if (delta > 50 && canScroll) {
         canScroll = false;
@@ -38,7 +38,7 @@ $( document ).ready(function() {
 
     if (!($(this).hasClass('is-active'))) {
 
-      var $this = $(this),
+      let $this = $(this),
           curActive = $this.parent().find('.is-active'),
           curPos = $this.parent().children().index(curActive),
           nextPos = $this.parent().children().index($this),
@@ -53,7 +53,7 @@ $( document ).ready(function() {
 
   $('.cta').click(function(){
 
-    var curActive = $('.side-nav').find('.is-active'),
+    let curActive = $('.side-nav').find('.is-active'),
         curPos = $('.side-nav').children().index(curActive),
         lastItem = $('.side-nav').children().length - 1,
         nextPos = lastItem;
@@ -64,7 +64,7 @@ $( document ).ready(function() {
   });
 
   // swipe support for touch devices
-  var targetElement = document.getElementById('viewport'),
+  let targetElement = document.getElementById('viewport'),
       mc = new Hammer(targetElement);
   mc.get('swipe').set({ direction: Hammer.DIRECTION_VERTICAL });
   mc.on('swipeup swipedown', function(e) {
@@ -85,7 +85,7 @@ $( document ).ready(function() {
   // determine scroll, swipe, and arrow key direction
   function updateHelper(param) {
 
-    var curActive = $('.side-nav').find('.is-active'),
+    let curActive = $('.side-nav').find('.is-active'),
         curPos = $('.side-nav').children().index(curActive),
         lastItem = $('.side-nav').children().length - 1,
         nextPos = 0;
@@ -179,7 +179,7 @@ $( document ).ready(function() {
 
     $('.slider--prev, .slider--next').click(function() {
 
-      var $this = $(this),
+      let $this = $(this),
           curLeft = $('.slider').find('.slider--item-left'),
           curLeftPos = $('.slider').children().index(curLeft),
           curCenter = $('.slider').find('.slider--item-center'),
@@ -257,7 +257,7 @@ $( document ).ready(function() {
 
     $('.work-request--information input').focusout(function(){
 
-      var textVal = $(this).val();
+      let textVal = $(this).val();
 
       if (textVal === "") {
         $(this).removeClass('has-value');
