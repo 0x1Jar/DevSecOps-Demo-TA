@@ -28,6 +28,9 @@ RUN echo 'add_header X-Frame-Options "SAMEORIGIN";' >> /etc/nginx/conf.d/default
     echo 'add_header X-Content-Type-Options "nosniff";' >> /etc/nginx/conf.d/default.conf && \
     echo 'add_header X-XSS-Protection "1; mode=block";' >> /etc/nginx/conf.d/default.conf
 
+# Switch to non-root user
+USER nginx
+
 # Expose port 80
 EXPOSE 80
 
