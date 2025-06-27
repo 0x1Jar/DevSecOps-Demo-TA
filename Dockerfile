@@ -1,27 +1,25 @@
-# Build stage
-FROM node:alpine AS build
+# Build stage: This stage prepares the application files.
+# Using a lightweight base image as we are only copying files.
+FROM alpine:3.18 AS build
 
 # Set working directory
 WORKDIR /app
 
-# Copy project files
+# Copy all project files into the build stage.
+# The .dockerignore file will prevent sensitive files from being included.
 COPY . .
 
-# Production stage
+# --- Production Stage ---
+# Use the official Nginx image for the final, lean image.
 FROM nginx:alpine
 
 # Copy custom nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copy static files to the default Nginx public folder
-COPY . /usr/share/nginx/html
-
-# Remove unnecessary files from the final image
-RUN rm -rf /usr/share/nginx/html/Jenkinsfile \
-    /usr/share/nginx/html/sonar-project.properties* \
-    /usr/share/nginx/html/.git* \
-    /usr/share/nginx/html/Dockerfile \
-    /usr/share/nginx/html/nginx.conf
+# Copy only the necessary static files from the build stage.
+# This is the key security improvement: only application code is copied,
+# and no sensitive files like .git, Jenkinsfile, etc., ever enter the final image.
+COPY --from=build /app/ /usr/share/nginx/html/
 
 # Add security headers
 RUN echo 'add_header X-Frame-Options "SAMEORIGIN";' >> /etc/nginx/conf.d/default.conf && \
