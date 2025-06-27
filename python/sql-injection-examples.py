@@ -10,14 +10,14 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 
-app = Flask(__name__)
-# FIXED: Add a secret key for CSRF protection from an environment variable.
-# The application will fail to start if the secret key is not provided,
-# preventing the use of a default, insecure key.
-SECRET_KEY = os.environ.get('FLASK_SECRET_KEY')
-if not SECRET_KEY:
-    raise ValueError("No FLASK_SECRET_KEY set for Flask application. Please set this environment variable.")
-app.config['SECRET_KEY'] = SECRET_KEY
+# app = Flask(__name__)
+# # FIXED: Add a secret key for CSRF protection from an environment variable.
+# # The application will fail to start if the secret key is not provided,
+# # preventing the use of a default, insecure key.
+# SECRET_KEY = os.environ.get('FLASK_SECRET_KEY')
+# if not SECRET_KEY:
+#     raise ValueError("No FLASK_SECRET_KEY set for Flask application. Please set this environment variable.")
+# app.config['SECRET_KEY'] = SECRET_KEY
 
 
 # Simulate database connection
@@ -132,27 +132,27 @@ class SearchForm(FlaskForm):
     query = StringField('Search Query', validators=[DataRequired()])
     submit = SubmitField('Search')
 
-@app.route('/secure-search', methods=['GET', 'POST'])
-def secure_search():
-    """
-    This route is protected against CSRF.
-    The form validation will fail if the CSRF token is missing or invalid.
-    """
-    form = SearchForm()
-    if form.validate_on_submit():
-        # Process the form data safely
-        search_query = form.query.data
-        # Here you would perform a safe search, e.g., using parameterized queries
-        return jsonify({"status": "success", "query": search_query})
+# @app.route('/secure-search', methods=['GET', 'POST'])
+# def secure_search():
+#     """
+#     This route is protected against CSRF.
+#     The form validation will fail if the CSRF token is missing or invalid.
+#     """
+#     form = SearchForm()
+#     if form.validate_on_submit():
+#         # Process the form data safely
+#         search_query = form.query.data
+#         # Here you would perform a safe search, e.g., using parameterized queries
+#         return jsonify({"status": "success", "query": search_query})
 
-    # Render a form with the CSRF token included via form.hidden_tag()
-    return render_template_string('''
-        <form method="POST">
-            {{ form.hidden_tag() }}
-            {{ form.query.label }} {{ form.query() }}
-            {{ form.submit() }}
-        </form>
-    ''', form=form)
+#     # Render a form with the CSRF token included via form.hidden_tag()
+#     return render_template_string('''
+#         <form method="POST">
+#             {{ form.hidden_tag() }}
+#             {{ form.query.label }} {{ form.query() }}
+#             {{ form.submit() }}
+#         </form>
+#     ''', form=form)
 
 # Flask routes to demonstrate vulnerabilities
 @app.route('/users/<user_id>')
