@@ -5,6 +5,10 @@ FROM alpine:3.18 AS build
 # Set working directory
 WORKDIR /app
 
+# Install necessary tools for the build stage (e.g., for health checks or debugging)
+# This is a good practice to ensure the build stage has basic utilities.
+RUN apk add --no-cache curl
+
 # Copy all project files into the build stage.
 # The .dockerignore file will prevent sensitive files from being included.
 COPY . .
