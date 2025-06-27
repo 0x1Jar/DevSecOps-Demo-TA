@@ -28,94 +28,103 @@ def get_db_connection():
 # Vulnerability 1: Basic SQL injection in a query
 def get_user_by_id(user_id):
     conn = get_db_connection()
-    # VULNERABLE: Direct string formatting
-    sql = f"SELECT * FROM users WHERE id = {user_id}"
+    # FIXED: Use parameterized query
+    sql = "SELECT * FROM users WHERE id = ?"
     # Simulate query execution
-    print(f"Executing query: {sql}")
-    return []
+    print(f"Executing query: {sql} with params: ({user_id},)")
+    return execute_query(sql, (user_id,))
 
 # Vulnerability 2: SQL injection in a WHERE clause with multiple conditions
 def search_users(username, role):
     conn = get_db_connection()
-    # VULNERABLE: String formatting in multiple places
-    sql = f"SELECT * FROM users WHERE username LIKE '%{username}%' AND role = '{role}'"
+    # FIXED: Use parameterized query for both conditions
+    sql = "SELECT * FROM users WHERE username LIKE ? AND role = ?"
     # Simulate query execution
-    print(f"Executing query: {sql}")
-    return []
+    print(f"Executing query: {sql} with params: ('%{username}%', '{role}')")
+    return execute_query(sql, (f"%{username}%", role))
 
 # Vulnerability 3: SQL injection in an ORDER BY clause
 def list_users(sort_column):
     conn = get_db_connection()
-    # VULNERABLE: Unsanitized input in ORDER BY
-    sql = f"SELECT * FROM users ORDER BY {sort_column}"
+    # FIXED: Validate sort_column against a whitelist of allowed columns
+    allowed_columns = ["id", "username", "email", "role"]
+    if sort_column not in allowed_columns:
+        raise ValueError("Invalid sort column")
+    sql = f"SELECT * FROM users ORDER BY {sort_column}" # Safe now after validation
     # Simulate query execution
     print(f"Executing query: {sql}")
-    return []
+    return execute_query(sql)
 
 # Vulnerability 4: SQL injection in a LIMIT clause
 def get_paginated_users(page, page_size):
     conn = get_db_connection()
-    offset = page * page_size
-    # VULNERABLE: Direct use of parameters in LIMIT/OFFSET
-    sql = f"SELECT * FROM users LIMIT {page_size} OFFSET {offset}"
+    # FIXED: Ensure page and page_size are integers
+    try:
+        page_int = int(page)
+        page_size_int = int(page_size)
+        offset = page_int * page_size_int
+    except (ValueError, TypeError):
+        raise ValueError("Page and page_size must be integers.")
+    sql = "SELECT * FROM users LIMIT ? OFFSET ?"
     # Simulate query execution
-    print(f"Executing query: {sql}")
-    return []
+    print(f"Executing query: {sql} with params: ({page_size_int}, {offset})")
+    return execute_query(sql, (page_size_int, offset))
 
 # Vulnerability 5: SQL injection in an INSERT statement
 def create_user(user):
     conn = get_db_connection()
-    # VULNERABLE: String formatting in INSERT
-    sql = f"INSERT INTO users (username, email, password) VALUES ('{user['username']}', '{user['email']}', '{user['password']}')"
+    # FIXED: Use parameterized query for INSERT
+    sql = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
+    params = (user.get('username'), user.get('email'), user.get('password'))
     # Simulate query execution
-    print(f"Executing query: {sql}")
-    return True
+    print(f"Executing query: {sql} with params: {params}")
+    return execute_query(sql, params)
 
 # Vulnerability 6: SQL injection in an UPDATE statement
 def update_user_email(user_id, new_email):
     conn = get_db_connection()
-    # VULNERABLE: String formatting without parameterization
-    sql = f"UPDATE users SET email = '{new_email}' WHERE id = {user_id}"
+    # FIXED: Use parameterized query for UPDATE
+    sql = "UPDATE users SET email = ? WHERE id = ?"
     # Simulate query execution
-    print(f"Executing query: {sql}")
-    return True
+    print(f"Executing query: {sql} with params: ('{new_email}', {user_id})")
+    return execute_query(sql, (new_email, user_id))
 
 # Vulnerability 7: SQL injection in a DELETE statement
 def delete_user(user_id):
     conn = get_db_connection()
-    # VULNERABLE: Direct string formatting in DELETE
-    sql = f"DELETE FROM users WHERE id = {user_id}"
+    # FIXED: Use parameterized query for DELETE
+    sql = "DELETE FROM users WHERE id = ?"
     # Simulate query execution
-    print(f"Executing query: {sql}")
-    return True
+    print(f"Executing query: {sql} with params: ({user_id},)")
+    return execute_query(sql, (user_id,))
 
 # Vulnerability 8: SQL injection in a JOIN clause
 def get_user_orders(user_id):
     conn = get_db_connection()
-    # VULNERABLE: Unsanitized parameter in JOIN query
-    sql = f"SELECT o.* FROM orders o JOIN users u ON o.user_id = u.id WHERE u.id = {user_id}"
+    # FIXED: Use parameterized query in JOIN
+    sql = "SELECT o.* FROM orders o JOIN users u ON o.user_id = u.id WHERE u.id = ?"
     # Simulate query execution
-    print(f"Executing query: {sql}")
-    return []
+    print(f"Executing query: {sql} with params: ({user_id},)")
+    return execute_query(sql, (user_id,))
 
 # Vulnerability 9: SQL injection in a subquery
 def get_users_with_orders(min_order_count):
     conn = get_db_connection()
-    # VULNERABLE: String formatting in a subquery
-    sql = f"SELECT * FROM users WHERE id IN (SELECT user_id FROM orders GROUP BY user_id HAVING COUNT(*) > {min_order_count})"
+    # FIXED: Use parameterized query in subquery
+    sql = "SELECT * FROM users WHERE id IN (SELECT user_id FROM orders GROUP BY user_id HAVING COUNT(*) > ?)"
     # Simulate query execution
-    print(f"Executing query: {sql}")
-    return []
+    print(f"Executing query: {sql} with params: ({min_order_count},)")
+    return execute_query(sql, (min_order_count,))
 
 # Vulnerability 10: SQL injection with string formatting and conditional
 def filter_users(is_active, status=None):
     conn = get_db_connection()
-    # VULNERABLE: Conditional query building
-    condition = "status = 'active'" if is_active else f"status = '{status}'"
-    sql = f"SELECT * FROM users WHERE {condition}"
+    # FIXED: Build query safely with parameters
+    sql = "SELECT * FROM users WHERE status = ?"
+    param = "active" if is_active else status
     # Simulate query execution
-    print(f"Executing query: {sql}")
-    return []
+    print(f"Executing query: {sql} with params: ('{param}',)")
+    return execute_query(sql, (param,))
 
 # --- CSRF Protection Example ---
 class SearchForm(FlaskForm):
