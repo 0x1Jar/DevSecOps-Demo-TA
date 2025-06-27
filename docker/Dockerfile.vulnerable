@@ -28,8 +28,9 @@ COPY --chown=appuser:appuser . .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Vulnerability 7: Using chmod 777
-# FIXED: Use appropriate, non-permissive permissions.
-RUN chmod -R 755 .
+# FIXED: Apply least privilege permissions.
+# Set directories to 755 (rwxr-xr-x) and files to 644 (rw-r--r--).
+RUN find . -type d -exec chmod 755 {} + && find . -type f -exec chmod 644 {} +
 
 # Vulnerability 8: Hardcoded credentials in commands
 # FIXED: Removed hardcoded credentials. Use build secrets if needed.
