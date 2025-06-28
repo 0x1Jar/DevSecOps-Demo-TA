@@ -10,14 +10,14 @@
 # from wtforms import StringField, SubmitField
 # from wtforms.validators import DataRequired
 
-# # app = Flask(__name__)
-# # # FIXED: Add a secret key for CSRF protection from an environment variable.
-# # # The application will fail to start if the secret key is not provided,
-# # # preventing the use of a default, insecure key.
-# # SECRET_KEY = os.environ.get('FLASK_SECRET_KEY')
-# # if not SECRET_KEY:
-# #     raise ValueError("No FLASK_SECRET_KEY set for Flask application. Please set this environment variable.")
-# # app.config['SECRET_KEY'] = SECRET_KEY
+# app = Flask(__name__)
+# # FIXED: Add a secret key for CSRF protection from an environment variable.
+# # The application will fail to start if the secret key is not provided,
+# # preventing the use of a default, insecure key.
+# SECRET_KEY = os.environ.get('FLASK_SECRET_KEY')
+# if not SECRET_KEY:
+#     raise ValueError("No FLASK_SECRET_KEY set for Flask application. Please set this environment variable.")
+# app.config['SECRET_KEY'] = SECRET_KEY
 
 
 # # Simulate database connection
