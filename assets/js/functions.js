@@ -3,7 +3,7 @@
 $( document ).ready(function() {
 
   // DOMMouseScroll included for firefox support
-  let canScroll = true,
+  var canScroll = true,
       scrollController = null;
   $(this).on('mousewheel DOMMouseScroll', function(e){
 
@@ -11,7 +11,7 @@ $( document ).ready(function() {
 
       e.preventDefault();
 
-      let delta = (e.originalEvent.wheelDelta) ? -e.originalEvent.wheelDelta : e.originalEvent.detail * 20;
+      var delta = (e.originalEvent.wheelDelta) ? -e.originalEvent.wheelDelta : e.originalEvent.detail * 20;
 
       if (delta > 50 && canScroll) {
         canScroll = false;
@@ -38,7 +38,7 @@ $( document ).ready(function() {
 
     if (!($(this).hasClass('is-active'))) {
 
-      let $this = $(this),
+      var $this = $(this),
           curActive = $this.parent().find('.is-active'),
           curPos = $this.parent().children().index(curActive),
           nextPos = $this.parent().children().index($this),
@@ -53,7 +53,7 @@ $( document ).ready(function() {
 
   $('.cta').click(function(){
 
-    let curActive = $('.side-nav').find('.is-active'),
+    var curActive = $('.side-nav').find('.is-active'),
         curPos = $('.side-nav').children().index(curActive),
         lastItem = $('.side-nav').children().length - 1,
         nextPos = lastItem;
@@ -64,16 +64,14 @@ $( document ).ready(function() {
   });
 
   // swipe support for touch devices
-  let targetElement = document.getElementById('viewport');
-  if (targetElement) {
-    let mc = new Hammer(targetElement);
-    mc.get('swipe').set({ direction: Hammer.DIRECTION_VERTICAL });
-    mc.on('swipeup swipedown', function(e) {
+  var targetElement = document.getElementById('viewport'),
+      mc = new Hammer(targetElement);
+  mc.get('swipe').set({ direction: Hammer.DIRECTION_VERTICAL });
+  mc.on('swipeup swipedown', function(e) {
 
-      updateHelper(e);
+    updateHelper(e);
 
-    });
-  }
+  });
 
   $(document).keyup(function(e){
 
@@ -87,7 +85,7 @@ $( document ).ready(function() {
   // determine scroll, swipe, and arrow key direction
   function updateHelper(param) {
 
-    let curActive = $('.side-nav').find('.is-active'),
+    var curActive = $('.side-nav').find('.is-active'),
         curPos = $('.side-nav').children().index(curActive),
         lastItem = $('.side-nav').children().length - 1,
         nextPos = 0;
@@ -178,90 +176,88 @@ $( document ).ready(function() {
   }
 
   function workSlider() {
+
     $('.slider--prev, .slider--next').click(function() {
-      let $this = $(this),
-          sliderState = {
-            curLeftPos: $('.slider').children().index($('.slider').find('.slider--item-left')),
-            curCenterPos: $('.slider').children().index($('.slider').find('.slider--item-center')),
-            curRightPos: $('.slider').children().index($('.slider').find('.slider--item-right')),
-            totalWorks: $('.slider').children().length,
-            $left: $('.slider--item-left'),
-            $center: $('.slider--item-center'),
-            $right: $('.slider--item-right'),
-            $item: $('.slider--item')
-          };
+
+      var $this = $(this),
+          curLeft = $('.slider').find('.slider--item-left'),
+          curLeftPos = $('.slider').children().index(curLeft),
+          curCenter = $('.slider').find('.slider--item-center'),
+          curCenterPos = $('.slider').children().index(curCenter),
+          curRight = $('.slider').find('.slider--item-right'),
+          curRightPos = $('.slider').children().index(curRight),
+          totalWorks = $('.slider').children().length,
+          $left = $('.slider--item-left'),
+          $center = $('.slider--item-center'),
+          $right = $('.slider--item-right'),
+          $item = $('.slider--item');
 
       $('.slider').animate({ opacity : 0 }, 400);
 
-      setTimeout(function() {
-        if ($this.hasClass('slider--next')) {
-          handleSliderNext(sliderState);
-        } else {
-          handleSliderPrev(sliderState);
+      setTimeout(function(){
+
+      if ($this.hasClass('slider--next')) {
+        if (curLeftPos < totalWorks - 1 && curCenterPos < totalWorks - 1 && curRightPos < totalWorks - 1) {
+          $left.removeClass('slider--item-left').next().addClass('slider--item-left');
+          $center.removeClass('slider--item-center').next().addClass('slider--item-center');
+          $right.removeClass('slider--item-right').next().addClass('slider--item-right');
         }
-      }, 400);
+        else {
+          if (curLeftPos === totalWorks - 1) {
+            $item.removeClass('slider--item-left').first().addClass('slider--item-left');
+            $center.removeClass('slider--item-center').next().addClass('slider--item-center');
+            $right.removeClass('slider--item-right').next().addClass('slider--item-right');
+          }
+          else if (curCenterPos === totalWorks - 1) {
+            $left.removeClass('slider--item-left').next().addClass('slider--item-left');
+            $item.removeClass('slider--item-center').first().addClass('slider--item-center');
+            $right.removeClass('slider--item-right').next().addClass('slider--item-right');
+          }
+          else {
+            $left.removeClass('slider--item-left').next().addClass('slider--item-left');
+            $center.removeClass('slider--item-center').next().addClass('slider--item-center');
+            $item.removeClass('slider--item-right').first().addClass('slider--item-right');
+          }
+        }
+      }
+      else {
+        if (curLeftPos !== 0 && curCenterPos !== 0 && curRightPos !== 0) {
+          $left.removeClass('slider--item-left').prev().addClass('slider--item-left');
+          $center.removeClass('slider--item-center').prev().addClass('slider--item-center');
+          $right.removeClass('slider--item-right').prev().addClass('slider--item-right');
+        }
+        else {
+          if (curLeftPos === 0) {
+            $item.removeClass('slider--item-left').last().addClass('slider--item-left');
+            $center.removeClass('slider--item-center').prev().addClass('slider--item-center');
+            $right.removeClass('slider--item-right').prev().addClass('slider--item-right');
+          }
+          else if (curCenterPos === 0) {
+            $left.removeClass('slider--item-left').prev().addClass('slider--item-left');
+            $item.removeClass('slider--item-center').last().addClass('slider--item-center');
+            $right.removeClass('slider--item-right').prev().addClass('slider--item-right');
+          }
+          else {
+            $left.removeClass('slider--item-left').prev().addClass('slider--item-left');
+            $center.removeClass('slider--item-center').prev().addClass('slider--item-center');
+            $item.removeClass('slider--item-right').last().addClass('slider--item-right');
+          }
+        }
+      }
 
-      $('.slider').animate({ opacity : 1 }, 400);
+    }, 400);
+
+    $('.slider').animate({ opacity : 1 }, 400);
+
     });
-  }
 
-  function handleSliderNext(state) {
-    const { curLeftPos, curCenterPos, curRightPos, totalWorks, $left, $center, $right, $item } = state;
-    if (curLeftPos < totalWorks - 1 && curCenterPos < totalWorks - 1 && curRightPos < totalWorks - 1) {
-      $left.removeClass('slider--item-left').next().addClass('slider--item-left');
-      $center.removeClass('slider--item-center').next().addClass('slider--item-center');
-      $right.removeClass('slider--item-right').next().addClass('slider--item-right');
-      return;
-    }
-    if (curLeftPos === totalWorks - 1) {
-      $item.removeClass('slider--item-left').first().addClass('slider--item-left');
-      $center.removeClass('slider--item-center').next().addClass('slider--item-center');
-      $right.removeClass('slider--item-right').next().addClass('slider--item-right');
-      return;
-    }
-    if (curCenterPos === totalWorks - 1) {
-      $left.removeClass('slider--item-left').next().addClass('slider--item-left');
-      $item.removeClass('slider--item-center').first().addClass('slider--item-center');
-      $right.removeClass('slider--item-right').next().addClass('slider--item-right');
-      return;
-    }
-    // else
-    $left.removeClass('slider--item-left').next().addClass('slider--item-left');
-    $center.removeClass('slider--item-center').next().addClass('slider--item-center');
-    $item.removeClass('slider--item-right').first().addClass('slider--item-right');
-  }
-
-  function handleSliderPrev(state) {
-    const { curLeftPos, curCenterPos, curRightPos, $left, $center, $right, $item } = state;
-    if (curLeftPos !== 0 && curCenterPos !== 0 && curRightPos !== 0) {
-      $left.removeClass('slider--item-left').prev().addClass('slider--item-left');
-      $center.removeClass('slider--item-center').prev().addClass('slider--item-center');
-      $right.removeClass('slider--item-right').prev().addClass('slider--item-right');
-      return;
-    }
-    if (curLeftPos === 0) {
-      $item.removeClass('slider--item-left').last().addClass('slider--item-left');
-      $center.removeClass('slider--item-center').prev().addClass('slider--item-center');
-      $right.removeClass('slider--item-right').prev().addClass('slider--item-right');
-      return;
-    }
-    if (curCenterPos === 0) {
-      $left.removeClass('slider--item-left').prev().addClass('slider--item-left');
-      $item.removeClass('slider--item-center').last().addClass('slider--item-center');
-      $right.removeClass('slider--item-right').prev().addClass('slider--item-right');
-      return;
-    }
-    // else
-    $left.removeClass('slider--item-left').prev().addClass('slider--item-left');
-    $center.removeClass('slider--item-center').prev().addClass('slider--item-center');
-    $item.removeClass('slider--item-right').last().addClass('slider--item-right');
   }
 
   function transitionLabels() {
 
     $('.work-request--information input').focusout(function(){
 
-      let textVal = $(this).val();
+      var textVal = $(this).val();
 
       if (textVal === "") {
         $(this).removeClass('has-value');
