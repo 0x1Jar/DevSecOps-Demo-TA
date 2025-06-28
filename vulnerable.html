@@ -8,17 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     
-    <style>
-        /* Vulnerability 2: Inline CSS with duplicate selectors can cause confusion in style application. */
-        .button {
-            background-color: blue;
-            color: white;
-        }
-        .button {
-            padding: 10px;
-            margin: 5px;
-        }
-    </style>
+
     
     <script>
         // Vulnerability 1: Inline JavaScript - Insecure storage of sensitive data in localStorage can be easily accessed by any script on the same domain.
@@ -55,7 +45,6 @@
             <h2>Insecure iFrame</h2>
             <p>This iframe uses an insecure HTTP source which can make the page vulnerable to man-in-the-middle attacks where an attacker could intercept and modify the iframe content.</p>
             <!-- Vulnerability 4: Insecure iframe -->
-            <iframe src="http://example.com" width="500" height="300"></iframe>
         </section>
         
         <section class="mb-5">
@@ -95,7 +84,6 @@
             <h2>Missing Security Headers (onerror attribute)</h2>
             <p>The `onerror` attribute here can be used for XSS attacks if the image fails to load and executes the `alert` function.</p>
             <!-- Vulnerability 9: Missing security headers -->
-            <img src="image.jpg" onerror="alert('Image failed to load')" class="img-fluid">
         </section>
         
         <section class="mb-5">
