@@ -21,7 +21,8 @@ FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Hanya copy file/folder statis yang diperlukan ke image final
-COPY --from=build --chown=nginx:nginx /app/ /usr/share/nginx/html/
+COPY --from=build --chown=root:root /app/static/ /usr/share/nginx/html/static/
+COPY --from=build --chown=root:root /app/ /usr/share/nginx/html/
 
 
 # Expose port 80
