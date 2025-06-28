@@ -30,28 +30,6 @@ function generateRandomToken() {
     return "token_" + array[0].toString(36);
 }
 
-// Vulnerability 5: Potential infinite loop
-function processData(data) {
-    let i = 0;
-    // Missing increment can cause infinite loop
-    // FIXED: Added incrementor to prevent infinite loop.
-    while (i < data.length) { 
-        console.log(data[i]);
-        i++;
-    }
-}
-
-// Vulnerability 6: Unused variables and dead code
-function calculateTotal(items) {
-    let total = 0;
-    // FIXED: Removed unused variable 'tax'.
-    
-    for (let i = 0; i < items.length; i++) {
-        total += items[i].price;
-    }
-    // FIXED: Removed dead code block.
-    return total;
-}
 
 // Vulnerability 7: Insecure object creation
 function createUserObject(userData) {
