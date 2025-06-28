@@ -24,8 +24,8 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 COPY --chown=appuser:appgroup nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy hanya file/folder statis yang diperlukan
-COPY --from=build --chown=appuser:appgroup --chmod=755 /app/static/ /usr/share/nginx/html/static/
-COPY --from=build --chown=appuser:appgroup --chmod=644 /app/index.html /usr/share/nginx/html/
+COPY --from=build --chown=root:root --chmod=755 /app/static/ /usr/share/nginx/html/static/
+COPY --from=build --chown=root:root --chmod=644 /app/index.html /usr/share/nginx/html/
 
 # Ganti user ke non-root
 USER appuser
