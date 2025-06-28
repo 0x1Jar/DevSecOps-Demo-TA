@@ -40,7 +40,7 @@ COPY --from=build --chown=root:root --chmod=755 /app/assets/img/ /usr/share/ngin
 
 
 # Ganti user ke non-root
-USER appuser
+# USER appuser
 
 # Expose port 80
 EXPOSE 80
