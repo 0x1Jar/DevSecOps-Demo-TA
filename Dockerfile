@@ -17,8 +17,6 @@ COPY static/ ./static/
 COPY index.html ./
 COPY index.optimized.html ./
 COPY assets/ ./assets/
-COPY .dockerignore ./
-
 # --- Production Stage ---
 # Use the official Nginx image for the final, lean image.
 FROM nginx:alpine
