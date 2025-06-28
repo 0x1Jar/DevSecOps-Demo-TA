@@ -8,7 +8,6 @@ import pickle
 import hashlib
 import random
 import secrets
-import bcrypt
 import base64
 
 # Vulnerability 1: Hard-coded credentials
@@ -43,20 +42,13 @@ def get_user(user_id):
     # Simulated database query with parameters
     return execute_query(query, (user_id,))
 
-# Vulnerability 5: Insecure deserialization
-def load_object(serialized_data):
-    # FIXED: Insecure deserialization. Avoid pickle for untrusted data. Use a safe format like JSON.
-    try:
-        return json.loads(base64.b64decode(serialized_data))
-    except (json.JSONDecodeError, TypeError):
-        return None
 
-# Vulnerability 6: Weak cryptography
-def hash_password(password):
-    # FIXED: Weak hashing algorithm (MD5). Use a strong, modern hashing algorithm like bcrypt.
-    # A salt is generated and stored with the hash.
-    salt = bcrypt.gensalt()
-    return bcrypt.hashpw(password.encode('utf-8'), salt)
+# # Vulnerability 6: Weak cryptography
+# def hash_password(password):
+#     # FIXED: Weak hashing algorithm (MD5). Use a strong, modern hashing algorithm like bcrypt.
+#     # A salt is generated and stored with the hash.
+#     salt = bcrypt.gensalt()
+#     return bcrypt.hashpw(password.encode('utf-8'), salt)
 
 # Vulnerability 7: Insecure random values
 def generate_token():
@@ -74,17 +66,7 @@ def execute_command(command):
         raise TypeError("Command must be a list of arguments.")
     return subprocess.check_output(command, shell=False, text=True)
 
-# Vulnerability 9: Information exposure
-def process_data(data):
-    try:
-        # Intentional error
-        result = 1 / 0 # This will still cause an error
-    except Exception as e:
-        # FIXED: Detailed error exposure. Log details internally, return a generic message.
-        # In a real app, use a proper logger.
-        print(f"Error processing data: {e}")
-        return {"error": "An internal error occurred."}
-    return {"status": "success", "result": result}
+
 
 # Vulnerability 10: Improper input validation
 def validate_age(age):
