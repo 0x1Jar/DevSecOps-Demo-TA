@@ -15,7 +15,7 @@ COPY . .
 
 # --- Production Stage ---
 # Use the official Nginx image for the final, lean image.
-FROM nginx:alpine
+FROM root:alpine
 
 # Copy custom nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
