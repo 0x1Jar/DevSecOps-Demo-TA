@@ -15,15 +15,20 @@ COPY . .
 
 # --- Production Stage ---
 # Use the official Nginx image for the final, lean image.
-FROM root:alpine
+FROM nginx:alpine
+
+# Buat user dan group non-root
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 # Copy custom nginx config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --chown=appuser:appgroup nginx.conf /etc/nginx/conf.d/default.conf
 
-# Hanya copy file/folder statis yang diperlukan ke image final
-COPY --from=build --chown=root:root /app/static/ /usr/share/nginx/html/static/
-COPY --from=build --chown=root:root /app/ /usr/share/nginx/html/
+# Copy hanya file/folder statis yang diperlukan
+COPY --from=build --chown=appuser:appgroup --chmod=755 /app/static/ /usr/share/nginx/html/static/
+COPY --from=build --chown=appuser:appgroup --chmod=644 /app/index.html /usr/share/nginx/html/
 
+# Ganti user ke non-root
+USER appuser
 
 # Expose port 80
 EXPOSE 80
