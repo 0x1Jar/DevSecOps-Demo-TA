@@ -31,7 +31,6 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 COPY --chown=root:root nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy hanya file/folder statis yang diperlukan
-COPY --from=build --chown=root:root --chmod=755 /app/static/ /usr/share/nginx/html/static/
 COPY --from=build --chown=root:root --chmod=644 /app/index.html /usr/share/nginx/html/
 COPY --from=build --chown=root:root --chmod=644 /app/index.optimized.html /usr/share/nginx/html/
 COPY --from=build --chown=root:root --chmod=755 /app/assets/ /usr/share/nginx/html/assets/
