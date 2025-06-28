@@ -20,10 +20,10 @@ FROM nginx:alpine
 # Copy custom nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copy only the necessary static files from the build stage.
-# This is the key security improvement: only application code is copied,
-# and no sensitive files like .git, Jenkinsfile, etc., ever enter the final image.
-COPY --from=build --chown=nginx:nginx /app/ /usr/share/nginx/html/
+# Hanya copy file/folder statis yang diperlukan ke image final
+COPY --from=build --chown=nginx:nginx /app/index.html /usr/share/nginx/html/
+COPY --from=build --chown=nginx:nginx /app/assets/ /usr/share/nginx/html/assets/
+COPY --from=build --chown=nginx:nginx /app/img/ /usr/share/nginx/html/img/
 
 # Expose port 80
 EXPOSE 80
