@@ -64,14 +64,16 @@ $( document ).ready(function() {
   });
 
   // swipe support for touch devices
-  let targetElement = document.getElementById('viewport'),
-      mc = new Hammer(targetElement);
-  mc.get('swipe').set({ direction: Hammer.DIRECTION_VERTICAL });
-  mc.on('swipeup swipedown', function(e) {
+  let targetElement = document.getElementById('viewport');
+  if (targetElement) {
+    let mc = new Hammer(targetElement);
+    mc.get('swipe').set({ direction: Hammer.DIRECTION_VERTICAL });
+    mc.on('swipeup swipedown', function(e) {
 
-    updateHelper(e);
+      updateHelper(e);
 
-  });
+    });
+  }
 
   $(document).keyup(function(e){
 
