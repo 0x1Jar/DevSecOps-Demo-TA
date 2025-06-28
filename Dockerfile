@@ -19,7 +19,7 @@ COPY index.optimized.html ./
 COPY assets/ ./assets/
 # --- Production Stage ---
 # Use the official Nginx image for the final, lean image.
-FROM nginx:alpine
+FROM root:alpine
 
 # Set working directory
 WORKDIR /usr/share/nginx/html
