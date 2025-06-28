@@ -11,7 +11,10 @@ RUN apk add --no-cache curl
 
 # Copy all project files into the build stage.
 # The .dockerignore file will prevent sensitive files from being included.
-COPY . .
+COPY package.json package-lock.json ./
+COPY src/ ./src/
+COPY static/ ./static/
+COPY index.html ./
 
 # --- Production Stage ---
 # Use the official Nginx image for the final, lean image.
