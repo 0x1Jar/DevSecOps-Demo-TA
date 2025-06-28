@@ -21,7 +21,7 @@ FROM nginx:alpine
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 # Copy custom nginx config
-COPY --chown=appuser:appgroup nginx.conf /etc/nginx/conf.d/default.conf
+COPY --chown=root:root nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy hanya file/folder statis yang diperlukan
 COPY --from=build --chown=root:root --chmod=755 /app/static/ /usr/share/nginx/html/static/
