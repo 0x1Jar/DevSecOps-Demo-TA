@@ -180,25 +180,24 @@ $( document ).ready(function() {
   function workSlider() {
     $('.slider--prev, .slider--next').click(function() {
       let $this = $(this),
-          curLeft = $('.slider').find('.slider--item-left'),
-          curLeftPos = $('.slider').children().index(curLeft),
-          curCenter = $('.slider').find('.slider--item-center'),
-          curCenterPos = $('.slider').children().index(curCenter),
-          curRight = $('.slider').find('.slider--item-right'),
-          curRightPos = $('.slider').children().index(curRight),
-          totalWorks = $('.slider').children().length,
-          $left = $('.slider--item-left'),
-          $center = $('.slider--item-center'),
-          $right = $('.slider--item-right'),
-          $item = $('.slider--item');
+          sliderState = {
+            curLeftPos: $('.slider').children().index($('.slider').find('.slider--item-left')),
+            curCenterPos: $('.slider').children().index($('.slider').find('.slider--item-center')),
+            curRightPos: $('.slider').children().index($('.slider').find('.slider--item-right')),
+            totalWorks: $('.slider').children().length,
+            $left: $('.slider--item-left'),
+            $center: $('.slider--item-center'),
+            $right: $('.slider--item-right'),
+            $item: $('.slider--item')
+          };
 
       $('.slider').animate({ opacity : 0 }, 400);
 
       setTimeout(function() {
         if ($this.hasClass('slider--next')) {
-          handleSliderNext(curLeftPos, curCenterPos, curRightPos, totalWorks, $left, $center, $right, $item);
+          handleSliderNext(sliderState);
         } else {
-          handleSliderPrev(curLeftPos, curCenterPos, curRightPos, $left, $center, $right, $item);
+          handleSliderPrev(sliderState);
         }
       }, 400);
 
@@ -206,7 +205,8 @@ $( document ).ready(function() {
     });
   }
 
-  function handleSliderNext(curLeftPos, curCenterPos, curRightPos, totalWorks, $left, $center, $right, $item) {
+  function handleSliderNext(state) {
+    const { curLeftPos, curCenterPos, curRightPos, totalWorks, $left, $center, $right, $item } = state;
     if (curLeftPos < totalWorks - 1 && curCenterPos < totalWorks - 1 && curRightPos < totalWorks - 1) {
       $left.removeClass('slider--item-left').next().addClass('slider--item-left');
       $center.removeClass('slider--item-center').next().addClass('slider--item-center');
@@ -231,7 +231,8 @@ $( document ).ready(function() {
     $item.removeClass('slider--item-right').first().addClass('slider--item-right');
   }
 
-  function handleSliderPrev(curLeftPos, curCenterPos, curRightPos, $left, $center, $right, $item) {
+  function handleSliderPrev(state) {
+    const { curLeftPos, curCenterPos, curRightPos, $left, $center, $right, $item } = state;
     if (curLeftPos !== 0 && curCenterPos !== 0 && curRightPos !== 0) {
       $left.removeClass('slider--item-left').prev().addClass('slider--item-left');
       $center.removeClass('slider--item-center').prev().addClass('slider--item-center');
