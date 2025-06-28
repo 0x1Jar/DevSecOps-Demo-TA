@@ -3,12 +3,6 @@
 # This file contains explicit SQL injection vulnerabilities for SonarQube to detect
 # """
 
-# import os
-# import sqlite3
-# from flask import Flask, request, jsonify, render_template_string
-# from flask_wtf import FlaskForm
-# from wtforms import StringField, SubmitField
-# from wtforms.validators import DataRequired
 
 # app = Flask(__name__)
 # # FIXED: Add a secret key for CSRF protection from an environment variable.
@@ -124,8 +118,6 @@
 #     query = StringField('Search Query', validators=[DataRequired()])
 #     submit = SubmitField('Search')
 
-# # @app.route('/secure-search', methods=['GET', 'POST'])
-# # def secure_search():
 # #     """
 # #     This route is protected against CSRF.
 # #     The form validation will fail if the CSRF token is missing or invalid.
@@ -153,29 +145,22 @@
 #     users = get_user_by_id(user_id)
 #     return jsonify(users)
 
-# @app.route('/users/search')
-# def api_search_users():
 #     # VULNERABLE: Directly passing request parameters
 #     username = request.args.get('username', '')
 #     role = request.args.get('role', '')
 #     users = search_users(username, role)
 #     return jsonify(users)
 
-# @app.route('/users')
-# def api_list_users():
 #     # VULNERABLE: Directly passing request parameters
 #     sort_column = request.args.get('sort', 'id')
 #     users = list_users(sort_column)
 #     return jsonify(users)
 
-# @app.route('/users/create', methods=['POST'])
-# def api_create_user():
 #     # VULNERABLE: Directly passing request JSON
 #     user = request.json
 #     success = create_user(user)
 #     return jsonify({"success": success})
 
-# if __name__ == '__main__':
 #     # FIXED: Do not run in debug mode in production. Control with an environment variable.
 #     # Set FLASK_DEBUG=1 or FLASK_DEBUG=true in your environment to enable debug mode.
 #     debug_mode = os.environ.get('FLASK_DEBUG', 'false').lower() in ['true', '1', 't']
