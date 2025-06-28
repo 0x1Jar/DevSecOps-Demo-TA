@@ -68,13 +68,10 @@ pipeline {
     stage('Deploy') {
       steps {
         script {
-          def imageName = "demo-devsecops:${env.BUILD_NUMBER}"
-          echo "Deploying ${imageName}..."
-          // Stop and remove any existing container with the same name to avoid conflicts
-          sh "docker stop devsecops-app || true"
-          sh "docker rm devsecops-app || true"
-          // Run the new container with the correct port mapping for the reverse proxy
-          sh "docker run -d --name devsecops-app -p 8085:80 ${imageName}"
+          def imageName = "my-demo-website:${env.BUILD_NUMBER}"
+          sh "docker stop ta-website || true"
+          sh "docker rm ta-website || true"
+          sh "docker run -d --name ta-website -p 8085:80 ${imageName}"
         }
       }
     }
